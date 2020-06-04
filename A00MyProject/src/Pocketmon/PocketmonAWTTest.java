@@ -1,21 +1,28 @@
 package Pocketmon;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
@@ -23,6 +30,46 @@ public class PocketmonAWTTest {
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
+		}
+
+	}
+
+	public static class SelectAdd2 implements ActionListener {
+		JTable table;
+		JTextField text1, text2, text3;
+
+		public SelectAdd2(JTable table, JTextField text1, JTextField text2, JTextField text3) {
+			this.table = table;
+			this.text1 = text1;
+			this.text2 = text2;
+			this.text3 = text3;
+
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			Connection conn = null;
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+
+			try {
+				String quary = "SELECT * FROM POCKETMON ";
+				conn = PocketmonDBconnection.getConnection();
+				pstm = conn.prepareStatement(quary);
+				rs = pstm.executeQuery();
+				while (rs.next()) {
+					String arr[] = new String[5];
+					arr[0] = rs.getString(1);
+					arr[1] = rs.getString(2);
+					arr[2] = rs.getString(3);
+					arr[3] = rs.getString(4);
+					arr[4] = rs.getString(5);
+					DefaultTableModel model = (DefaultTableModel) table.getModel();
+					model.addRow(arr);
+				}
+			} catch (SQLException sqle) {
+				System.out.println("SELECT문에서 예외 발생");
+				sqle.printStackTrace();
+			} // 연결 종류
 		}
 
 	}
@@ -37,46 +84,6 @@ public class PocketmonAWTTest {
 		Panel p3 = new Panel();
 		Panel p4 = new Panel();
 		JPanel jp5 = new JPanel();
-
-		// 서치버튼
-		Button b1 = new Button("Search Test");
-		b1.setBounds(195, 135, 100, 20);
-//		b1.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//				List1.setText(" No     Name     Type1     Type2     Class"+"\n"+"--------------------------------------");
-//				
-//				//버튼 클릭시 data 베이스 연결
-//				Connection conn = null;
-//				PreparedStatement pstm = null;
-//				ResultSet rs = null;
-//				
-//				try {
-//					String quary = "SELECT * FROM POCKETMON ";
-//					conn = PocketmonDBconnection.getConnection();
-//					pstm = conn.prepareStatement(quary);
-//					rs = pstm.executeQuery();
-//
-//					while (rs.next()) {
-//						int No = rs.getInt(1);
-//						String Name = rs.getString(2);
-//						String Type1 = rs.getString(3);
-//						String Type2 = rs.getString(4);
-//						String Class = rs.getString(5);
-//
-//						String s = List1.getText();
-//						String result ="  "+ No + " " + Name + " " + Type1 + "  " + Type2 + "  " + Class;
-//						
-//						String line="--------------------------------------";
-//	
-//						List1.setText(s + "\n"+ result+ "\n"+line);
-//						
-//					}
-//				} catch (SQLException sqle) {
-//					System.out.println("SELECT문에서 예외 발생");
-//					sqle.printStackTrace();
-//				}//연결 종류 
-//			}
-//		});
 
 		// 이미지
 		Canvas c = new Canvas();
@@ -133,12 +140,41 @@ public class PocketmonAWTTest {
 		TextField ClassT1 = new TextField();
 
 		// swing Table 설정 방법
-		String menuname[] = { "No.", "Name","Type1","Type2","Class" };//String menuname[] = { "정렬 이름1", "정렬 이름2"};
-		DefaultTableModel menu = new DefaultTableModel(menuname, 151);//DefaultTableModel menu = new DefaultTableModel(menuname, 행갯수);
-		JTable List1 = new JTable(menu);
-		JScrollPane js = new JScrollPane(List1);
-		js.setSize(300, 265);
-		jp5.add(js);//JPanel 들어가야할  이름.add(js);
+		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
+		String colname[] = { "No.", "Name", "Type1","Type2", "Class"};
+		DefaultTableModel model = new DefaultTableModel(colname, 0);
+		JTable table = new JTable(model);
+		JScrollPane js = new JScrollPane(table);
+		js.setBounds(0, 20, 300, 245);
+		jp5.add(js);
+
+		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
+		JTextField text1 = new JTextField(6);
+		JTextField text2 = new JTextField(3);
+		JTextField text3 = new JTextField(2);
+		JLabel jl1 = new JLabel("1");
+		JLabel jl2 = new JLabel("2");
+		JLabel jl3 = new JLabel("3");
+		JButton button1 = new JButton("추가");
+
+		text1.setBounds(10, 0, 60, 20);
+		text2.setBounds(100, 0, 60, 20);
+		text3.setBounds(180, 0, 60, 20);
+		jl1.setBounds(0, 0, 10, 20);
+		jl2.setBounds(90, 0, 10, 20);
+		jl3.setBounds(165, 0, 10, 20);
+		button1.setBounds(239, 0, 60, 20);
+
+		jp5.add(jl1);
+		jp5.add(text1);
+		jp5.add(jl2);
+		jp5.add(text2);
+		jp5.add(jl3);
+		jp5.add(text3);
+		jp5.add(button1);
+
+		// 추가,삭제 버튼에 대한 리스너를 등록
+		button1.addActionListener(new SelectAdd2(table, text1, text2, text3));
 		f.pack();
 
 		// Search 파트 라벨 위치설정
@@ -190,7 +226,7 @@ public class PocketmonAWTTest {
 		p4.add(Type2T1);
 		p4.add(Class1);
 		p4.add(ClassT1);
-		p4.add(b1);
+		// p4.add(b1);
 		p4.add(List);
 
 		f.add(p1, FlowLayout.CENTER);

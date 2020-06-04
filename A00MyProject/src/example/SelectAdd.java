@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 public class SelectAdd implements ActionListener{
 	JTable table;
 	JTextField text1,text2,text3;
-	SelectAdd(JTable table,JTextField text1, JTextField text2, JTextField text3){
+	public SelectAdd(JTable table,JTextField text1, JTextField text2, JTextField text3){
 		this.table=table;
 		this.text1=text1;
 		this.text2=text2;
