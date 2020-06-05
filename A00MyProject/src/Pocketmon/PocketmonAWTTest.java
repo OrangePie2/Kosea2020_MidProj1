@@ -9,6 +9,7 @@ import java.awt.Panel;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
@@ -17,12 +18,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
@@ -35,36 +35,34 @@ public class PocketmonAWTTest {
 	}
 
 	public static class SelectAdd2 implements ActionListener {
-		JTable table;
-		JTextField text1, text2, text3;
+		JTable table1;
 
-		public SelectAdd2(JTable table, JTextField text1, JTextField text2, JTextField text3) {
-			this.table = table;
-			this.text1 = text1;
-			this.text2 = text2;
-			this.text3 = text3;
-
+		public SelectAdd2(JTable table) {
+			this.table1 = table;
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
-
+			int i = 0;
 			try {
 				String quary = "SELECT * FROM POCKETMON ";
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
 				while (rs.next()) {
-					String arr[] = new String[5];
-					arr[0] = rs.getString(1);
-					arr[1] = rs.getString(2);
-					arr[2] = rs.getString(3);
-					arr[3] = rs.getString(4);
-					arr[4] = rs.getString(5);
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					model.addRow(arr);
+					for (i = 0; i == 0; i++) {
+						String arr[] = new String[5];
+						arr[0] = rs.getString(1);
+						arr[1] = rs.getString(2);
+						arr[2] = rs.getString(3);
+						arr[3] = rs.getString(4);
+						arr[4] = rs.getString(5);
+						DefaultTableModel model = (DefaultTableModel) table1.getModel();
+						model.addRow(arr);
+					}
+
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
@@ -74,6 +72,20 @@ public class PocketmonAWTTest {
 
 	}
 
+//	public static class SearchCode1 implements MouseListener, ActionListener {
+//		JComboBox<String> jComboBox= new JComboBox<String> (new String[] {"No.","Name","Type1","Type2","Class"});
+//
+//		public SearchCode1(JTable table) {
+//			this.table2 = table;
+//		}
+//
+//		public void actionPerformed(ActionEvent e) {
+//
+//		}
+//
+//
+//	}
+
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
 
@@ -82,7 +94,7 @@ public class PocketmonAWTTest {
 		Panel p1 = new Panel();
 		Panel p2 = new Panel();
 		Panel p3 = new Panel();
-		Panel p4 = new Panel();
+		JPanel p4 = new JPanel();
 		JPanel jp5 = new JPanel();
 
 		// 이미지
@@ -141,41 +153,31 @@ public class PocketmonAWTTest {
 
 		// swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
-		String colname[] = { "No.", "Name", "Type1","Type2", "Class"};
-		DefaultTableModel model = new DefaultTableModel(colname, 0);
+		String colname[] = { "No.", "Name", "Type1", "Type2", "Class" };
+		DefaultTableModel model = new DefaultTableModel(colname, 0) {
+			public boolean isCellEditable(int i, int c) {
+				return false;
+			}
+
+		};
 		JTable table = new JTable(model);
 		JScrollPane js = new JScrollPane(table);
 		js.setBounds(0, 20, 300, 245);
 		jp5.add(js);
 
 		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
-		JTextField text1 = new JTextField(6);
-		JTextField text2 = new JTextField(3);
-		JTextField text3 = new JTextField(2);
-		JLabel jl1 = new JLabel("1");
-		JLabel jl2 = new JLabel("2");
-		JLabel jl3 = new JLabel("3");
-		JButton button1 = new JButton("추가");
 
-		text1.setBounds(10, 0, 60, 20);
-		text2.setBounds(100, 0, 60, 20);
-		text3.setBounds(180, 0, 60, 20);
-		jl1.setBounds(0, 0, 10, 20);
-		jl2.setBounds(90, 0, 10, 20);
-		jl3.setBounds(165, 0, 10, 20);
-		button1.setBounds(239, 0, 60, 20);
-
-		jp5.add(jl1);
-		jp5.add(text1);
-		jp5.add(jl2);
-		jp5.add(text2);
-		jp5.add(jl3);
-		jp5.add(text3);
-		jp5.add(button1);
+		JButton button1 = new JButton("all search");
+		JButton search = new JButton("search");
+		button1.setBounds(210, 140, 90, 20);
+		search.setBounds(0, 140, 90, 20);
+		p4.add(search);
+		p4.add(button1);
 
 		// 추가,삭제 버튼에 대한 리스너를 등록
-		button1.addActionListener(new SelectAdd2(table, text1, text2, text3));
-		f.pack();
+		button1.addActionListener(new SelectAdd2(table));
+//		search.addActionListener(new SearchCode(table));
+		// search.addActionListener(new SearchCode());
 
 		// Search 파트 라벨 위치설정
 		NoT1.setBounds(60, 45, 60, 20);
@@ -226,7 +228,6 @@ public class PocketmonAWTTest {
 		p4.add(Type2T1);
 		p4.add(Class1);
 		p4.add(ClassT1);
-		// p4.add(b1);
 		p4.add(List);
 
 		f.add(p1, FlowLayout.CENTER);
