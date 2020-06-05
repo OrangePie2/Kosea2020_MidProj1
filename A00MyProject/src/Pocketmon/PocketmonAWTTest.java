@@ -9,7 +9,6 @@ import java.awt.Panel;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
@@ -18,7 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,7 +24,17 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
-
+	
+	static TextField NoT1;
+	static TextField NameT1;
+	static TextField Type1T1;
+	static TextField Type2T1;
+	static TextField ClassT1;
+	
+	static JTable table;
+	static DefaultTableModel model;
+	
+	
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
@@ -36,7 +44,7 @@ public class PocketmonAWTTest {
 
 	public static class SelectAdd2 implements ActionListener {
 		JTable table1;
-
+		
 		public SelectAdd2(JTable table) {
 			this.table1 = table;
 		}
@@ -45,24 +53,26 @@ public class PocketmonAWTTest {
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
-			int i = 0;
+			model.setNumRows(0);
 			try {
-				String quary = "SELECT * FROM POCKETMON ";
+				table.removeAll();
+				//String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%'"+ NameT1.getText()+ Type1T1.getText() + Type2T1.getText() +ClassT1.getText();
+				String quary = "SELECT * FROM POCKETMON where NAME like '%" + NameT1.getText() + "%'";
+				
+				
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
 				while (rs.next()) {
-					for (i = 0; i == 0; i++) {
-						String arr[] = new String[5];
-						arr[0] = rs.getString(1);
-						arr[1] = rs.getString(2);
-						arr[2] = rs.getString(3);
-						arr[3] = rs.getString(4);
-						arr[4] = rs.getString(5);
-						DefaultTableModel model = (DefaultTableModel) table1.getModel();
-						model.addRow(arr);
-					}
-
+					String arr[] = new String[5];
+					arr[0] = rs.getString(1);
+					arr[1] = rs.getString(2);
+					arr[2] = rs.getString(3);
+					arr[3] = rs.getString(4);
+					arr[4] = rs.getString(5);
+					model = (DefaultTableModel) table1.getModel();
+	
+					model.addRow(arr);
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
@@ -72,19 +82,6 @@ public class PocketmonAWTTest {
 
 	}
 
-//	public static class SearchCode1 implements MouseListener, ActionListener {
-//		JComboBox<String> jComboBox= new JComboBox<String> (new String[] {"No.","Name","Type1","Type2","Class"});
-//
-//		public SearchCode1(JTable table) {
-//			this.table2 = table;
-//		}
-//
-//		public void actionPerformed(ActionEvent e) {
-//
-//		}
-//
-//
-//	}
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
@@ -145,28 +142,28 @@ public class PocketmonAWTTest {
 		DescriptionT.setBounds(15, 25, 680, 70);
 
 		// Search 파트 라벨 텍스트 시작
-		TextField NoT1 = new TextField();
-		TextField NameT1 = new TextField();
-		TextField Type1T1 = new TextField();
-		TextField Type2T1 = new TextField();
-		TextField ClassT1 = new TextField();
+		NoT1 = new TextField();
+		NameT1 = new TextField();
+		Type1T1 = new TextField();
+		Type2T1 = new TextField();
+		ClassT1 = new TextField();
 
 		// swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
 		String colname[] = { "No.", "Name", "Type1", "Type2", "Class" };
-		DefaultTableModel model = new DefaultTableModel(colname, 0) {
+		model = new DefaultTableModel(colname, 0) {
 			public boolean isCellEditable(int i, int c) {
 				return false;
 			}
-
+			
 		};
-		JTable table = new JTable(model);
+		
+		table = new JTable(model);
 		JScrollPane js = new JScrollPane(table);
 		js.setBounds(0, 20, 300, 245);
 		jp5.add(js);
 
 		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
-
 		JButton button1 = new JButton("all search");
 		JButton search = new JButton("search");
 		button1.setBounds(210, 140, 90, 20);
@@ -176,8 +173,7 @@ public class PocketmonAWTTest {
 
 		// 추가,삭제 버튼에 대한 리스너를 등록
 		button1.addActionListener(new SelectAdd2(table));
-//		search.addActionListener(new SearchCode(table));
-		// search.addActionListener(new SearchCode());
+		// search.addActionListener(new SelectAdd1(table));
 
 		// Search 파트 라벨 위치설정
 		NoT1.setBounds(60, 45, 60, 20);

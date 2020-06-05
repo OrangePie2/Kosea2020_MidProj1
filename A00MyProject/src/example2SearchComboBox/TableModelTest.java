@@ -1,4 +1,4 @@
-package example2Search;
+package example2SearchComboBox;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -11,11 +11,8 @@ public class TableModelTest extends JFrame {
 	// 테이블 데이터
 	String[] tcolumn = { "월요일", "화요일", "수요일", "목요일", "금요일" };
 	String[][] tdata = {
-
 			{ "1", "2", "3", "4", "5", "6" },
-
 			{ "1", "1", "2", "3", "4", "5" },
-
 			{ "2", "3", "3", "4", "5", "6" } };
 
 	// 콤보 박스 데이터
