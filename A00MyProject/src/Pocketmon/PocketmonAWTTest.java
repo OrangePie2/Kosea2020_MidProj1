@@ -3,12 +3,13 @@ package Pocketmon;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
@@ -24,17 +25,25 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
-	
+
 	static TextField NoT1;
 	static TextField NameT1;
 	static TextField Type1T1;
 	static TextField Type2T1;
 	static TextField ClassT1;
-	
+
+	static TextField NoT;
+	static TextField NameT;
+	static TextField Type1T;
+	static TextField Type2T;
+	static TextField ClassT;
+	static TextField Specificity1T;
+	static TextField Specificity2T;
+	static TextField DescriptionT;
+
 	static JTable table;
 	static DefaultTableModel model;
-	
-	
+
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
@@ -42,9 +51,9 @@ public class PocketmonAWTTest {
 
 	}
 
-	public static class SelectAdd2 implements ActionListener {
+	public static class SelectAdd2 implements ActionListener {// 목록 구현
 		JTable table1;
-		
+
 		public SelectAdd2(JTable table) {
 			this.table1 = table;
 		}
@@ -56,10 +65,8 @@ public class PocketmonAWTTest {
 			model.setNumRows(0);
 			try {
 				table.removeAll();
-				//String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%'"+ NameT1.getText()+ Type1T1.getText() + Type2T1.getText() +ClassT1.getText();
-				String quary = "SELECT * FROM POCKETMON where NAME like '%" + NameT1.getText() + "%'";
-				
-				
+				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%'";
+
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
@@ -71,7 +78,7 @@ public class PocketmonAWTTest {
 					arr[3] = rs.getString(4);
 					arr[4] = rs.getString(5);
 					model = (DefaultTableModel) table1.getModel();
-	
+
 					model.addRow(arr);
 				}
 			} catch (SQLException sqle) {
@@ -82,6 +89,66 @@ public class PocketmonAWTTest {
 
 	}
 
+	public static class MyMouseListener implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Connection conn = null;
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			try {
+
+				int row = table.getSelectedRow();//순서 값 불러오기
+				String no = (String) table.getValueAt(row, 0);//순서값을 이용하여 포켓몬 넘버 불러오기
+
+				String quary = "SELECT * FROM POCKETMON where no=" + no;
+				conn = PocketmonDBconnection.getConnection();
+				pstm = conn.prepareStatement(quary);
+				rs = pstm.executeQuery();
+				while (rs.next()) {
+					String No = rs.getString(1);
+					String Name = rs.getString(2);
+					String Type1 = rs.getString(3);
+					String Type2 = rs.getString(4);
+					String Class = rs.getString(5);
+					String Specificity1 = rs.getString(6);
+					String Specificity2 = rs.getString(7);
+					String Description = rs.getString(8);
+
+					NoT.setText(No);
+					NameT.setText(Name);
+					Type1T.setText(Type1);
+					Type2T.setText(Type2);
+					ClassT.setText(Class);
+					Specificity1T.setText(Specificity1);
+					Specificity2T.setText(Specificity2);
+					DescriptionT.setText(Description);
+
+				}
+			} catch (SQLException sqle) {
+				System.out.println("SELECT문에서 예외 발생");
+				sqle.printStackTrace();
+			} // 연결 종류
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+
+		}
+
+	}
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
@@ -104,22 +171,27 @@ public class PocketmonAWTTest {
 		Label Name = new Label("Name : ");
 		Label Type1 = new Label("Type1 : ");
 		Label Type2 = new Label("Type2 : ");
-		Label Class = new Label("Class:");
-		Label Specificity1 = new Label("Specificity1: ");
-		Label Specificity2 = new Label("Specificity2 : ");
-		Label Description = new Label("Description: ");
-		Label Search = new Label("Search");
+		Label Class = new Label("Class :");
+		Label Specificity1 = new Label("Specificity1:");
+		Label Specificity2 = new Label("Specificity2:");
+		Label Description = new Label("Description : ");
+
 		// 라벨 위치
+		No.setBounds(10, 10, 50, 20);
+		Name.setBounds(10, 40, 50, 20);
+		Type1.setBounds(10, 70, 40, 20);
+		Type2.setBounds(10, 100, 40, 20);
+		Class.setBounds(5, 30, 40, 20);
+		Specificity1.setBounds(5, 65, 65, 20);
+		Specificity2.setBounds(5, 100, 65, 20);
 		Description.setBounds(15, 5, 100, 20);
 
 		// Search 파트 시작
-		Search.setBounds(40, 40, 10, 10);
 		Label No1 = new Label("No. : ", Label.RIGHT);
-		Label Name1 = new Label("Name: ", Label.RIGHT);
-		Label Type11 = new Label("Type1: ");
-		Label Type21 = new Label("Type2: ");
-		Label Class1 = new Label("Class: ");
-		Label List = new Label("List");
+		Label Name1 = new Label("Name : ", Label.RIGHT);
+		Label Type11 = new Label("Type1 : ");
+		Label Type21 = new Label("Type2 : ");
+		Label Class1 = new Label("Class : ");
 
 		// Search 파트 위치설정
 		No1.setBounds(12, 45, 30, 20);
@@ -127,18 +199,24 @@ public class PocketmonAWTTest {
 		Type11.setBounds(10, 75, 50, 20);
 		Type21.setBounds(155, 75, 50, 20);
 		Class1.setBounds(10, 103, 50, 20);
-		List.setBounds(10, 135, 30, 20);
 
 		// 라벨 텍스트 시작
-		TextField NoT = new TextField(10);
-		TextField NameT = new TextField(10);
-		TextField Type1T = new TextField(10);
-		TextField Type2T = new TextField(10);
-		TextField ClassT = new TextField(10);
-		TextField Specificity1T = new TextField(10);
-		TextField Specificity2T = new TextField(10);
-		TextField DescriptionT = new TextField();
+		NoT = new TextField();
+		NameT = new TextField();
+		Type1T = new TextField();
+		Type2T = new TextField();
+		ClassT = new TextField();
+		Specificity1T = new TextField();
+		Specificity2T = new TextField();
+		DescriptionT = new TextField();
 		// 라벨 텍스트 위치
+		NoT.setBounds(70, 10, 90, 20);
+		NameT.setBounds(70, 40, 90, 20);
+		Type1T.setBounds(70, 70, 90, 20);
+		Type2T.setBounds(70, 100, 90, 20);
+		ClassT.setBounds(80, 30, 80, 20);
+		Specificity1T.setBounds(80, 65, 80, 20);
+		Specificity2T.setBounds(80, 100, 80, 20);
 		DescriptionT.setBounds(15, 25, 680, 70);
 
 		// Search 파트 라벨 텍스트 시작
@@ -155,25 +233,20 @@ public class PocketmonAWTTest {
 			public boolean isCellEditable(int i, int c) {
 				return false;
 			}
-			
 		};
-		
 		table = new JTable(model);
 		JScrollPane js = new JScrollPane(table);
-		js.setBounds(0, 20, 300, 245);
+		js.setBounds(0, 0, 300, 265);
 		jp5.add(js);
-
 		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
-		JButton button1 = new JButton("all search");
-		JButton search = new JButton("search");
-		button1.setBounds(210, 140, 90, 20);
-		search.setBounds(0, 140, 90, 20);
-		p4.add(search);
+		JButton button1 = new JButton("search");
+		button1.setBounds(205, 135, 90, 20);
 		p4.add(button1);
-
 		// 추가,삭제 버튼에 대한 리스너를 등록
 		button1.addActionListener(new SelectAdd2(table));
-		// search.addActionListener(new SelectAdd1(table));
+
+		// 마우스 클릭
+		table.addMouseListener(new MyMouseListener());
 
 		// Search 파트 라벨 위치설정
 		NoT1.setBounds(60, 45, 60, 20);
@@ -224,10 +297,11 @@ public class PocketmonAWTTest {
 		p4.add(Type2T1);
 		p4.add(Class1);
 		p4.add(ClassT1);
-		p4.add(List);
 
-		f.add(p1, FlowLayout.CENTER);
-		f.add(p2, BorderLayout.CENTER);
+		f.add(p1);
+		p1.setLayout(null);
+		f.add(p2);
+		p2.setLayout(null);
 		f.add(p3);
 		p3.setLayout(null);
 		f.add(p4);
