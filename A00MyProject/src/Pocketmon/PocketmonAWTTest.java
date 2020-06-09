@@ -1,11 +1,8 @@
 package Pocketmon;
 
-import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Label;
-import java.awt.Panel;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -17,8 +14,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -43,6 +42,7 @@ public class PocketmonAWTTest {
 
 	static JTable table;
 	static DefaultTableModel model;
+	static JLabel jlabel;
 
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
@@ -66,6 +66,7 @@ public class PocketmonAWTTest {
 			try {
 				table.removeAll();
 				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%'";
+				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
@@ -98,8 +99,8 @@ public class PocketmonAWTTest {
 			ResultSet rs = null;
 			try {
 
-				int row = table.getSelectedRow();//순서 값 불러오기
-				String no = (String) table.getValueAt(row, 0);//순서값을 이용하여 포켓몬 넘버 불러오기
+				int row = table.getSelectedRow();// 순서 값 불러오기
+				String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
 
 				String quary = "SELECT * FROM POCKETMON where no=" + no;
 				conn = PocketmonDBconnection.getConnection();
@@ -152,79 +153,60 @@ public class PocketmonAWTTest {
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
+		f.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				"C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\ed885d6cb3eb797e3e0b0bb8ce678590.jpg"));
+		f.getContentPane().setBackground(Color.WHITE);
 
 		PocketmonExitClass ec = new PocketmonExitClass();
+		f.getContentPane().setLayout(null);
 
-		Panel p1 = new Panel();
-		Panel p2 = new Panel();
-		Panel p3 = new Panel();
-		JPanel p4 = new JPanel();
 		JPanel jp5 = new JPanel();
-
-		// 이미지
-		Canvas c = new Canvas();
-		c.setBackground(Color.blue);
-		c.setBounds(195, 60, 340, 250);
+		jp5.setBounds(730, 160, 300, 265);
+		f.getContentPane().add(jp5);
+		jp5.setLayout(null);
 
 		// 라벨 시작
-		Label No = new Label("No.      : ");
-		Label Name = new Label("Name : ");
-		Label Type1 = new Label("Type1 : ");
-		Label Type2 = new Label("Type2 : ");
-		Label Class = new Label("Class :");
-		Label Specificity1 = new Label("Specificity1:");
-		Label Specificity2 = new Label("Specificity2:");
-		Label Description = new Label("Description : ");
+		JLabel No = new JLabel("No.      : ");
+		JLabel Name = new JLabel("Name : ");
+		JLabel Type1 = new JLabel("Type1 : ");
+		JLabel Type2 = new JLabel("Type2 : ");
+		JLabel Class = new JLabel("Class :");
+		JLabel Specificity1 = new JLabel("Specificity1:");
+		JLabel Specificity2 = new JLabel("Specificity2:");
 
 		// 라벨 위치
 		No.setBounds(10, 10, 50, 20);
 		Name.setBounds(10, 40, 50, 20);
-		Type1.setBounds(10, 70, 40, 20);
-		Type2.setBounds(10, 100, 40, 20);
-		Class.setBounds(5, 30, 40, 20);
-		Specificity1.setBounds(5, 65, 65, 20);
-		Specificity2.setBounds(5, 100, 65, 20);
-		Description.setBounds(15, 5, 100, 20);
-
-		// Search 파트 시작
-		Label No1 = new Label("No. : ", Label.RIGHT);
-		Label Name1 = new Label("Name : ", Label.RIGHT);
-		Label Type11 = new Label("Type1 : ");
-		Label Type21 = new Label("Type2 : ");
-		Label Class1 = new Label("Class : ");
-
-		// Search 파트 위치설정
-		No1.setBounds(12, 45, 30, 20);
-		Name1.setBounds(120, 45, 50, 20);
-		Type11.setBounds(10, 75, 50, 20);
-		Type21.setBounds(155, 75, 50, 20);
-		Class1.setBounds(10, 103, 50, 20);
+		Type1.setBounds(10, 70, 50, 20);
+		Type2.setBounds(10, 100, 50, 20);
+		Class.setBounds(5, 30, 45, 20);
+		Specificity1.setBounds(5, 65, 75, 20);
+		Specificity2.setBounds(5, 100, 75, 20);
 
 		// 라벨 텍스트 시작
 		NoT = new TextField();
+		NoT.setEditable(false);
 		NameT = new TextField();
+		NameT.setEditable(false);
 		Type1T = new TextField();
+		Type1T.setEditable(false);
 		Type2T = new TextField();
+		Type2T.setEditable(false);
 		ClassT = new TextField();
+		ClassT.setEditable(false);
 		Specificity1T = new TextField();
+		Specificity1T.setEditable(false);
 		Specificity2T = new TextField();
-		DescriptionT = new TextField();
+		Specificity2T.setEditable(false);
+
 		// 라벨 텍스트 위치
 		NoT.setBounds(70, 10, 90, 20);
 		NameT.setBounds(70, 40, 90, 20);
 		Type1T.setBounds(70, 70, 90, 20);
 		Type2T.setBounds(70, 100, 90, 20);
-		ClassT.setBounds(80, 30, 80, 20);
-		Specificity1T.setBounds(80, 65, 80, 20);
-		Specificity2T.setBounds(80, 100, 80, 20);
-		DescriptionT.setBounds(15, 25, 680, 70);
-
-		// Search 파트 라벨 텍스트 시작
-		NoT1 = new TextField();
-		NameT1 = new TextField();
-		Type1T1 = new TextField();
-		Type2T1 = new TextField();
-		ClassT1 = new TextField();
+		ClassT.setBounds(85, 30, 90, 20);
+		Specificity1T.setBounds(85, 65, 90, 20);
+		Specificity2T.setBounds(85, 100, 90, 20);
 
 		// swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
@@ -238,81 +220,121 @@ public class PocketmonAWTTest {
 		JScrollPane js = new JScrollPane(table);
 		js.setBounds(0, 0, 300, 265);
 		jp5.add(js);
-		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
-		JButton button1 = new JButton("search");
-		button1.setBounds(205, 135, 90, 20);
-		p4.add(button1);
-		// 추가,삭제 버튼에 대한 리스너를 등록
-		button1.addActionListener(new SelectAdd2(table));
 
 		// 마우스 클릭
 		table.addMouseListener(new MyMouseListener());
-
-		// Search 파트 라벨 위치설정
-		NoT1.setBounds(60, 45, 60, 20);
-		NameT1.setBounds(170, 45, 125, 20);
-		Type1T1.setBounds(60, 75, 85, 20);
-		Type2T1.setBounds(205, 75, 90, 20);
-		ClassT1.setBounds(60, 105, 235, 20);
-
-		// 이미지 구현
-		f.add(c);
-
-		// 라벨, 라벨텍스트 구현
-		p1.setBounds(10, 100, 180, 130);
-		p2.setBounds(540, 90, 170, 150);
-		p3.setBounds(10, 320, 710, 105);
-		p4.setBounds(730, 0, 300, 160);
-		jp5.setBounds(730, 160, 300, 265);
+		f.getContentPane().setLayout(null);
 		// setBounds(x, y, width, height);
 
-		p1.setBackground(Color.magenta);
-		p2.setBackground(Color.orange);
-		p3.setBackground(Color.pink);
-		p4.setBackground(Color.green);
 		jp5.setBackground(Color.WHITE);
-		p1.add(No);
-		p1.add(NoT);
-		p1.add(Name);
-		p1.add(NameT);
-		p1.add(Type1);
-		p1.add(Type1T);
-		p1.add(Type2);
-		p1.add(Type2T);
-		p2.add(Class);
-		p2.add(ClassT);
-		p2.add(Specificity1);
-		p2.add(Specificity1T);
-		p2.add(Specificity2);
-		p2.add(Specificity2T);
-		p3.add(Description);
-		p3.add(DescriptionT);
-		p4.add(No1);
-		p4.add(NoT1);
-		p4.add(Name1);
-		p4.add(NameT1);
-		p4.add(Type11);
-		p4.add(Type1T1);
-		p4.add(Type21);
-		p4.add(Type2T1);
-		p4.add(Class1);
-		p4.add(ClassT1);
 
-		f.add(p1);
-		p1.setLayout(null);
-		f.add(p2);
-		p2.setLayout(null);
-		f.add(p3);
-		p3.setLayout(null);
-		f.add(p4);
-		p4.setLayout(null);
-		f.add(jp5);
-		jp5.setLayout(null);
-		f.setLayout(new BorderLayout());
+		// 가운데 라벨
+		JLabel lblNewLabel_1 = new JLabel("New label");
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\pika.jpg"));
+		lblNewLabel_1.setBounds(195, 60, 340, 250);
+		f.getContentPane().add(lblNewLabel_1);
+
+		// 오른쪽 위 라벨
+		JLabel lblNewLabel_4 = new JLabel("New label");
+		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC624\uB978\uCABD\uC704(\uD074\uB798\uC2A4).jpg"));
+		lblNewLabel_4.setBounds(540, 90, 180, 150);
+		f.getContentPane().add(lblNewLabel_4);
+		lblNewLabel_4.add(Class);
+		lblNewLabel_4.add(ClassT);
+		lblNewLabel_4.add(Specificity1);
+		lblNewLabel_4.add(Specificity1T);
+		lblNewLabel_4.add(Specificity2);
+		lblNewLabel_4.add(Specificity2T);
+
+		// 왼쪽 라벨
+		JLabel lblNewLabel_2 = new JLabel("New label");
+		lblNewLabel_2.setIcon(
+				new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC67C\uCABD \uC704(\uB118\uBC84).jpg"));
+		lblNewLabel_2.setBounds(10, 100, 180, 130);
+		f.getContentPane().add(lblNewLabel_2);
+		lblNewLabel_2.add(No);
+		lblNewLabel_2.add(NoT);
+		lblNewLabel_2.add(Name);
+		lblNewLabel_2.add(NameT);
+		lblNewLabel_2.add(Type1);
+		lblNewLabel_2.add(Type1T);
+		lblNewLabel_2.add(Type2);
+		lblNewLabel_2.add(Type2T);
+
+		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
+		JButton button1 = new JButton("search");
+		button1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uBC84\uD2BC3.jpg"));
+		f.getContentPane().add(button1);
+		button1.setBounds(938, 138, 90, 20);
+		// 추가,삭제 버튼에 대한 리스너를 등록
+		button1.addActionListener(new SelectAdd2(table));
+
+		// Search 파트 라벨 텍스트 시작
+		NoT1 = new TextField();
+		f.getContentPane().add(NoT1);
+
+		// Search 파트 라벨 위치설정
+		NoT1.setBounds(786, 37, 60, 20);
+
+		// Search 파트 시작
+		JLabel No1 = new JLabel("No. :");
+		f.getContentPane().add(No1);
+
+		// Search 파트 위치설정
+		No1.setBounds(730, 37, 30, 20);
+		JLabel Name1 = new JLabel("Name :");
+		f.getContentPane().add(Name1);
+		Name1.setBounds(853, 37, 50, 20);
+		NameT1 = new TextField();
+		f.getContentPane().add(NameT1);
+		NameT1.setBounds(907, 37, 117, 20);
+		Type1T1 = new TextField();
+		f.getContentPane().add(Type1T1);
+		Type1T1.setBounds(786, 75, 85, 20);
+		JLabel Type11 = new JLabel("Type1 :");
+		f.getContentPane().add(Type11);
+		Type11.setBounds(730, 75, 50, 20);
+		JLabel Type21 = new JLabel("Type2 :");
+		f.getContentPane().add(Type21);
+		Type21.setBounds(880, 75, 50, 20);
+		Type2T1 = new TextField();
+		f.getContentPane().add(Type2T1);
+		Type2T1.setBounds(932, 75, 90, 20);
+		ClassT1 = new TextField();
+		f.getContentPane().add(ClassT1);
+		ClassT1.setBounds(787, 112, 235, 20);
+		JLabel Class1 = new JLabel("Class :");
+		f.getContentPane().add(Class1);
+		Class1.setBounds(730, 112, 50, 20);
+
+		JLabel lblNewLabel_3 = new JLabel("New label");
+		lblNewLabel_3.setIcon(
+				new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uAC80\uC0C9\uB780.jpg"));
+		lblNewLabel_3.setBounds(726, 0, 309, 431);
+		f.getContentPane().add(lblNewLabel_3);
+		DescriptionT = new TextField();
+		DescriptionT.setEditable(false);
+		f.getContentPane().add(DescriptionT);
+		DescriptionT.setBounds(25, 351, 680, 60);
+		JLabel Description = new JLabel("Description : ");
+		Description.setBounds(20, 5, 100, 20);
+
+		// 라벨 구현
+
+		JLabel lblNewLabel_5 = new JLabel("New label");
+		lblNewLabel_5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uB514\uC2A4\uD06C\uB9BD\uC158.jpg"));
+		lblNewLabel_5.setBounds(8, 320, 710, 105);
+		f.getContentPane().add(lblNewLabel_5);
+		lblNewLabel_5.add(Description);
+
+		// 바탕 라벨
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(0, 0, 725, 431);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\back.jpg"));
+		f.getContentPane().add(lblNewLabel);
 		f.setSize(1050, 470);
 		f.addWindowListener(ec);
 		f.setVisible(true);
 
 	}
-
 }
