@@ -31,14 +31,15 @@ public class PocketmonAWTTest {
 	static TextField Type2T1;
 	static TextField ClassT1;
 
-	static TextField NoT;
-	static TextField NameT;
-	static TextField Type1T;
-	static TextField Type2T;
-	static TextField ClassT;
-	static TextField Specificity1T;
-	static TextField Specificity2T;
-	static TextField DescriptionT;
+	// 메인 결과창
+	static JLabel NoT;
+	static JLabel NameT;
+	static JLabel Type1T;
+	static JLabel Type2T;
+	static JLabel ClassT;
+	static JLabel Specificity1T;
+	static JLabel Specificity2T;
+	static JLabel DescriptionT;
 
 	static JTable table;
 	static DefaultTableModel model;
@@ -65,7 +66,14 @@ public class PocketmonAWTTest {
 			model.setNumRows(0);
 			try {
 				table.removeAll();
-				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%'";
+				String quary = "SELECT * FROM POCKETMON where No like '%" 
+				+ NoT1.getText() + "%' and name like '%"
+				+ NameT1.getText()+"%' and type1 like '%"
+				+ Type1T1.getText()+"%' and type2 like '%"
+				+ Type2T1.getText()+"%' and class like '%"
+				+ ClassT1.getText()+"%'"
+				;
+				System.out.println("70 lines : -------------------------");
 				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
@@ -101,8 +109,13 @@ public class PocketmonAWTTest {
 
 				int row = table.getSelectedRow();// 순서 값 불러오기
 				String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
+			
 
-				String quary = "SELECT * FROM POCKETMON where no=" + no;
+				System.out.println("107 lines : -------------------------");
+				String quary = "SELECT * FROM POCKETMON where no like '%" + no+"%'";
+				System.out.println(quary);
+				
+				
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
@@ -184,20 +197,13 @@ public class PocketmonAWTTest {
 		Specificity2.setBounds(5, 100, 75, 20);
 
 		// 라벨 텍스트 시작
-		NoT = new TextField();
-		NoT.setEditable(false);
-		NameT = new TextField();
-		NameT.setEditable(false);
-		Type1T = new TextField();
-		Type1T.setEditable(false);
-		Type2T = new TextField();
-		Type2T.setEditable(false);
-		ClassT = new TextField();
-		ClassT.setEditable(false);
-		Specificity1T = new TextField();
-		Specificity1T.setEditable(false);
-		Specificity2T = new TextField();
-		Specificity2T.setEditable(false);
+		NoT = new JLabel();
+		NameT = new JLabel();
+		Type1T = new JLabel();
+		Type2T = new JLabel();
+		ClassT = new JLabel();
+		Specificity1T = new JLabel();
+		Specificity2T = new JLabel();
 
 		// 라벨 텍스트 위치
 		NoT.setBounds(70, 10, 90, 20);
@@ -236,7 +242,8 @@ public class PocketmonAWTTest {
 
 		// 오른쪽 위 라벨
 		JLabel lblNewLabel_4 = new JLabel("New label");
-		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC624\uB978\uCABD\uC704(\uD074\uB798\uC2A4).jpg"));
+		lblNewLabel_4.setIcon(new ImageIcon(
+				"C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC624\uB978\uCABD\uC704(\uD074\uB798\uC2A4).jpg"));
 		lblNewLabel_4.setBounds(540, 90, 180, 150);
 		f.getContentPane().add(lblNewLabel_4);
 		lblNewLabel_4.add(Class);
@@ -248,8 +255,8 @@ public class PocketmonAWTTest {
 
 		// 왼쪽 라벨
 		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setIcon(
-				new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC67C\uCABD \uC704(\uB118\uBC84).jpg"));
+		lblNewLabel_2.setIcon(new ImageIcon(
+				"C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC67C\uCABD \uC704(\uB118\uBC84).jpg"));
 		lblNewLabel_2.setBounds(10, 100, 180, 130);
 		f.getContentPane().add(lblNewLabel_2);
 		lblNewLabel_2.add(No);
@@ -312,8 +319,7 @@ public class PocketmonAWTTest {
 				new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uAC80\uC0C9\uB780.jpg"));
 		lblNewLabel_3.setBounds(726, 0, 309, 431);
 		f.getContentPane().add(lblNewLabel_3);
-		DescriptionT = new TextField();
-		DescriptionT.setEditable(false);
+		DescriptionT = new JLabel();
 		f.getContentPane().add(DescriptionT);
 		DescriptionT.setBounds(25, 351, 680, 60);
 		JLabel Description = new JLabel("Description : ");
@@ -322,7 +328,8 @@ public class PocketmonAWTTest {
 		// 라벨 구현
 
 		JLabel lblNewLabel_5 = new JLabel("New label");
-		lblNewLabel_5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uB514\uC2A4\uD06C\uB9BD\uC158.jpg"));
+		lblNewLabel_5.setIcon(new ImageIcon(
+				"C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uB514\uC2A4\uD06C\uB9BD\uC158.jpg"));
 		lblNewLabel_5.setBounds(8, 320, 710, 105);
 		f.getContentPane().add(lblNewLabel_5);
 		lblNewLabel_5.add(Description);
@@ -334,6 +341,7 @@ public class PocketmonAWTTest {
 		f.getContentPane().add(lblNewLabel);
 		f.setSize(1050, 470);
 		f.addWindowListener(ec);
+		f.setResizable(false);// 창 크기 수정 불가
 		f.setVisible(true);
 
 	}
