@@ -1,6 +1,7 @@
 package Pocketmon;
 
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -45,7 +46,11 @@ public class PocketmonAWTTest {
 	static JTable table;
 	static DefaultTableModel model;
 	static JLabel jlabel;
-
+	
+	static JLabel addjl = new JLabel();
+	
+	static String picsave;
+	
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
@@ -95,7 +100,24 @@ public class PocketmonAWTTest {
 
 	}
 
-	public static class SelectAdd2 implements ActionListener {// 목록 구현
+	// 추가 창에서 그림 클릭시 구현
+	public static class SelectAdd3 implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			JFrame picJF = new JFrame();
+			FileDialog pic = new FileDialog(picJF, "File Open", FileDialog.LOAD);
+			pic.setDirectory("C:\\Windows");
+			pic.setVisible(true);
+			picsave = pic.getDirectory() + pic.getFile();
+			
+			// add JLabel에 이미지 넣기
+			addjl.setIcon(new ImageIcon(picsave));
+
+		}
+	}
+	
+
+   //추가  버튼 클릭시 나오는 새창 
+	public static class SelectAdd2 implements ActionListener {
 		JTable table2;
 
 		public SelectAdd2(JTable table2) {
@@ -103,10 +125,10 @@ public class PocketmonAWTTest {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("추가버튼 연결됨");
 			JFrame addJF = new JFrame("데이터 추가 입력");
+			SelectAdd3 SA3= new SelectAdd3();
 			
-			//add 파트 라벨 구현 및 위치 크기
+			// add 파트 라벨 구현 및 위치 크기
 			JLabel addno = new JLabel("No  . :");
 			JLabel addname = new JLabel("Name :");
 			JLabel addtype1 = new JLabel("Type1 :");
@@ -131,16 +153,16 @@ public class PocketmonAWTTest {
 			addJF.getContentPane().add(addspecificity1);
 			addJF.getContentPane().add(addspecificity2);
 			addJF.getContentPane().add(adddescription);
-			
-			//add 파트 텍스트필드  구현 및 위치 크기
-			JTextField addnoT=new JTextField();
-			JTextField addnameT=new JTextField();
-			JTextField addtype1T=new JTextField();
-			JTextField addtype2T=new JTextField();
-			JTextField addclassT=new JTextField();
-			JTextField addspecificity1T=new JTextField();
-			JTextField addspecificity2T=new JTextField();
-			JTextField adddescriptionT=new JTextField();
+
+			// add 파트 텍스트필드 구현 및 위치 크기
+			JTextField addnoT = new JTextField();
+			JTextField addnameT = new JTextField();
+			JTextField addtype1T = new JTextField();
+			JTextField addtype2T = new JTextField();
+			JTextField addclassT = new JTextField();
+			JTextField addspecificity1T = new JTextField();
+			JTextField addspecificity2T = new JTextField();
+			JTextField adddescriptionT = new JTextField();
 			addnoT.setBounds(470, 20, 70, 20);
 			addnameT.setBounds(610, 20, 150, 20);
 			addtype1T.setBounds(480, 50, 110, 20);
@@ -157,39 +179,42 @@ public class PocketmonAWTTest {
 			addJF.getContentPane().add(addspecificity1T);
 			addJF.getContentPane().add(addspecificity2T);
 			addJF.getContentPane().add(adddescriptionT);
-			
-			//add JLabel 구현
-			JLabel addjl= new JLabel();
-			addjl.setBounds(20, 15, 390, 330);
-			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\루기아.jpg"));
-			addJF.getContentPane().add(addjl);
-			
-		    //그림 불러오기 버튼
+
+			// 그림 불러오기 버튼
 			JButton addpicbut = new JButton("그림");
+			
 			addpicbut.setBounds(430, 320, 70, 20);
 			addJF.add(addpicbut);
+			addpicbut.addActionListener(SA3);
 			
-			//입력값 저장  버튼
+			// 입력값 저장 버튼
 			JButton addsavebut = new JButton("입력");
 			addsavebut.setBounds(690, 320, 70, 20);
 			addJF.add(addsavebut);
-			
-			//add backLabel 구현
+
+			// add JLabel 구현
+			addjl.setBounds(20, 15, 390, 330);
+			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\add이미지넣기전배경.jpg"));
+			addJF.getContentPane().add(addjl);
+
+			// add backLabel 구현
 			JLabel addBackLabel = new JLabel();
 			addBackLabel.setBounds(0, 0, 800, 400);
 			addBackLabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\addback.jpg"));
 			addJF.getContentPane().add(addBackLabel);
-			
-			//add프레임 구현
+
+			// add프레임 구현
 			addJF.getContentPane().setLayout(null);
 			addJF.setBounds(250, 250, 800, 400);
 			addJF.setVisible(true);
-			System.out.println("추가버튼 구동됨");
 
 		}
 
+	
+
 	}
 
+	// 마우스 클릭시 데이터 메인 모니터에 구현
 	public static class MyMouseListener implements MouseListener {
 
 		@Override
@@ -256,7 +281,8 @@ public class PocketmonAWTTest {
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
-		f.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC804\uCCB4\uCC3D\uC544\uC774\uCF58.jpg"));
+		f.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				"C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\\uC804\uCCB4\uCC3D\uC544\uC774\uCF58.jpg"));
 		PocketmonExitClass ec = new PocketmonExitClass();
 		f.getContentPane().setLayout(null);
 
