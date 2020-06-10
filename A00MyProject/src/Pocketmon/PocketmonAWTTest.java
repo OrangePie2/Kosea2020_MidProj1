@@ -104,7 +104,7 @@ public class PocketmonAWTTest {
 
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("추가버튼 연결됨");
-			JFrame addJF = new JFrame("추가 테이터 입력");
+			JFrame addJF = new JFrame("데이터 추가 입력");
 			
 			//add 파트 라벨 구현 및 위치 크기
 			JLabel addno = new JLabel("No  . :");
@@ -160,9 +160,19 @@ public class PocketmonAWTTest {
 			
 			//add JLabel 구현
 			JLabel addjl= new JLabel();
-			addjl.setBounds(20, 15, 390, 320);
+			addjl.setBounds(20, 15, 390, 330);
 			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\루기아.jpg"));
 			addJF.getContentPane().add(addjl);
+			
+		    //그림 불러오기 버튼
+			JButton addpicbut = new JButton("그림");
+			addpicbut.setBounds(430, 320, 70, 20);
+			addJF.add(addpicbut);
+			
+			//입력값 저장  버튼
+			JButton addsavebut = new JButton("입력");
+			addsavebut.setBounds(690, 320, 70, 20);
+			addJF.add(addsavebut);
 			
 			//add backLabel 구현
 			JLabel addBackLabel = new JLabel();
@@ -409,7 +419,7 @@ public class PocketmonAWTTest {
 		// 데이터 추가
 		JButton addButton = new JButton();
 		addButton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\\uD3EC\uCF13\uBAAC \uC790\uB8CC\\add.jpg"));
-		addButton.setBounds(735, 134, 40, 23);
+		addButton.setBounds(730, 134, 40, 23);
 		f.getContentPane().add(addButton);
 		addButton.addActionListener(new SelectAdd2(table));
 
