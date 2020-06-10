@@ -28,7 +28,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="Pocketmon.PocketmonAWTTest.SelectAdd2" project="A00MyProject" 
+  <class id="4" language="java" name="Pocketmon.PocketmonAWTTest.SelectAdd1" project="A00MyProject" 
     file="/A00MyProject/src/Pocketmon/PocketmonAWTTest.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="139" width="374" x="855" y="406"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -39,11 +39,11 @@
   </class>  
   <nesting id="5">    
     <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="4"/>  
+    <end type="TARGET" refId="3"/>  
   </nesting>  
   <nesting id="6">    
     <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="3"/>  
+    <end type="TARGET" refId="4"/>  
   </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
