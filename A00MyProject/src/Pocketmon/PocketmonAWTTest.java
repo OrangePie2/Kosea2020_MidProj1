@@ -1,7 +1,6 @@
 package Pocketmon;
 
 import java.awt.FileDialog;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.TextField;
 import java.awt.Toolkit;
@@ -11,20 +10,24 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
@@ -45,12 +48,11 @@ public class PocketmonAWTTest {
 	static JLabel Specificity1T;
 	static JLabel Specificity2T;
 	static JLabel DescriptionT;
-	
-	//이미지 구현
+
+	// 이미지 구현
 	static byte[] bytes;
 	static JLabel lblNewLabel_1;
-	
-	
+
 	static JTable table;
 	static DefaultTableModel model;
 	static JLabel jlabel;
@@ -67,13 +69,12 @@ public class PocketmonAWTTest {
 	static JTextField addclassT;
 	static JTextField addspecificity1T;
 	static JTextField addspecificity2T;
-	static JTextField adddescriptionT;
-	
+	static JTextArea adddescriptionT;
+
 	static String a;
 	static String b;
 	static int d;
-	
-	
+
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
@@ -95,12 +96,9 @@ public class PocketmonAWTTest {
 			model.setNumRows(0);
 			try {
 				table.removeAll();
-				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() 
-				+ "%' and name like '%"+ NameT1.getText() 
-				+ "%' and type1 like '%"+ Type1T1.getText() 
-				+ "%' and type2 like '%"+ Type2T1.getText() 
-				+ "%' and class like '%" + ClassT1.getText() 
-				+ "%'";
+				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%' and name like '%"
+						+ NameT1.getText() + "%' and type1 like '%" + Type1T1.getText() + "%' and type2 like '%"
+						+ Type2T1.getText() + "%' and class like '%" + ClassT1.getText() + "%'";
 				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
@@ -133,26 +131,26 @@ public class PocketmonAWTTest {
 			pic.setDirectory("C:\\Windows");
 			pic.setVisible(true);
 			picsave = pic.getDirectory() + pic.getFile();
-
+			System.out.println("133lines : "+ picsave);
 			// add JLabel에 이미지 넣기
 			addjl.setIcon(new ImageIcon(picsave));
 		}
 	}
 
 	public static class adddata implements ActionListener {
-		
+
 		public void actionPerformed(ActionEvent e) {
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
-			
-			
+			FileInputStream imageInputStream = null;
+
 			try {
-				String quary1 =  "select max(no) from pocketmon";
+				String quary1 = "select max(no) from pocketmon";
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary1);
 				rs = pstm.executeQuery();
-				
+
 				while (rs.next()) {
 					a = rs.getString(1);
 					int c = Integer.parseInt(a);
@@ -160,20 +158,28 @@ public class PocketmonAWTTest {
 					b = Integer.toString(d);
 					addnoT.setText(b);
 				}
-				
-				String quary = "INSERT INTO POCKETMON  VALUES" 
-						+ "('" + b + "',"
-						+ "'" + addnameT.getText() + "',"
-						+ "'" + addtype1T.getText() + "'," 
-						+ "'" + addtype2T.getText() + "'," 
-						+ "'" + addclassT.getText() + "'," 
-						+ "'" + addspecificity1T.getText() + "'," 
-						+ "'" + addspecificity2T.getText() + "'," 
-						+ "'" + adddescriptionT.getText() + "')";
-						conn = PocketmonDBconnection.getConnection();
-						pstm = conn.prepareStatement(quary);
-						rs = pstm.executeQuery();
-						
+			} catch (SQLException sqle) {
+				System.out.println("SELECT2문에서 예외 발생");
+				sqle.printStackTrace();
+			} // 연결 종류
+
+			try {
+				conn = PocketmonDBconnection.getConnection();
+				pstm = conn.prepareStatement(
+						"INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description, IMAGE) "
+								+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'"
+								+ addtype1T.getText() + "'," + "'" + addtype2T.getText() + "'," + "'"
+								+ addclassT.getText() + "'," + "'" + addspecificity1T.getText() + "'," + "'"
+								+ addspecificity2T.getText() + "'," + "'" + adddescriptionT.getText() + "'," + "?)");
+				try {
+					imageInputStream = new FileInputStream(new File(picsave));
+					System.out.println("Line186" + picsave);
+				} catch (FileNotFoundException e1) {
+					System.out.println(e1);
+					e1.printStackTrace();
+				}
+				pstm.setBinaryStream(1, imageInputStream);
+				pstm.execute();
 			} catch (SQLException sqle) {
 				System.out.println("SELECT2문에서 예외 발생");
 				sqle.printStackTrace();
@@ -195,7 +201,7 @@ public class PocketmonAWTTest {
 			adddata adddata = new adddata();
 
 			System.out.println("197lines : ");
-			
+
 			// add 파트 라벨 구현 및 위치 크기
 			JLabel addno = new JLabel("No  . :");
 			JLabel addname = new JLabel("Name :");
@@ -231,7 +237,8 @@ public class PocketmonAWTTest {
 			addclassT = new JTextField();
 			addspecificity1T = new JTextField();
 			addspecificity2T = new JTextField();
-			adddescriptionT = new JTextField();
+			adddescriptionT = new JTextArea();
+			JScrollPane jsp= new JScrollPane(adddescriptionT);
 			addnoT.setBounds(470, 20, 70, 20);
 			addnameT.setBounds(610, 20, 150, 20);
 			addtype1T.setBounds(480, 50, 110, 20);
@@ -239,7 +246,8 @@ public class PocketmonAWTTest {
 			addclassT.setBounds(430, 160, 330, 20);
 			addspecificity1T.setBounds(430, 105, 130, 20);
 			addspecificity2T.setBounds(630, 105, 130, 20);
-			adddescriptionT.setBounds(430, 215, 330, 100);
+			jsp.setBounds(430, 215, 330, 100);
+			
 			addJF.getContentPane().add(addnoT);
 			addJF.getContentPane().add(addnameT);
 			addJF.getContentPane().add(addtype1T);
@@ -247,7 +255,7 @@ public class PocketmonAWTTest {
 			addJF.getContentPane().add(addclassT);
 			addJF.getContentPane().add(addspecificity1T);
 			addJF.getContentPane().add(addspecificity2T);
-			addJF.getContentPane().add(adddescriptionT);
+			addJF.getContentPane().add(jsp);
 
 			// 그림 불러오기 버튼
 			JButton addpicbut = new JButton("그림");
@@ -286,7 +294,7 @@ public class PocketmonAWTTest {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-	
+
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
@@ -301,7 +309,7 @@ public class PocketmonAWTTest {
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
-				bytes = null;//DB이미지 구현
+				bytes = null;// DB이미지 구현
 				while (rs.next()) {
 					String No = rs.getString(1);
 					String Name = rs.getString(2);
@@ -321,9 +329,9 @@ public class PocketmonAWTTest {
 					Specificity1T.setText(Specificity1);
 					Specificity2T.setText(Specificity2);
 					DescriptionT.setText(Description);
-					
-					//이미지 불러오기
-					Image image=lblNewLabel_1.getToolkit().createImage(bytes);
+
+					// 이미지 불러오기
+					Image image = lblNewLabel_1.getToolkit().createImage(bytes);
 					lblNewLabel_1.setIcon(new ImageIcon(image));
 				}
 			} catch (SQLException sqle) {
@@ -351,26 +359,13 @@ public class PocketmonAWTTest {
 
 	}
 
-	
 	public static class testbutton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		System.out.println("test");
-	}
-}
-	public static class Pane extends JDesktopPane {
-		private Image image;
-
-		public Pane(Image image) {
-			this.image = image;
-		}
-
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.drawImage(image, 0, 0, this);
+			System.out.println("test");
 		}
 	}
-		
+
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
 		f.setIconImage(Toolkit.getDefaultToolkit()
@@ -441,7 +436,7 @@ public class PocketmonAWTTest {
 		lblNewLabel_1 = new JLabel();
 		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\pika.jpg"));
 		lblNewLabel_1.setBounds(195, 60, 340, 250);
-		//f.getContentPane().add(lblNewLabel_1);
+		// f.getContentPane().add(lblNewLabel_1);
 		f.add(lblNewLabel_1);
 
 		// 오른쪽 위 라벨
@@ -479,13 +474,12 @@ public class PocketmonAWTTest {
 		// 추가,삭제 버튼에 대한 리스너를 등록
 		button1.addActionListener(new listup(table));
 
-		//테스트 버튼
-				JButton button3 = new JButton("테스트");
-				f.add(button3);
-				button3.setBounds(900, 133, 80, 24);
-				button3.addActionListener(new testbutton());
-		
-		
+		// 테스트 버튼
+		JButton button3 = new JButton("테스트");
+		f.add(button3);
+		button3.setBounds(900, 133, 80, 24);
+		button3.addActionListener(new testbutton());
+
 		// Search 파트 라벨 텍스트 시작
 		NoT1 = new TextField();
 		f.getContentPane().add(NoT1);
