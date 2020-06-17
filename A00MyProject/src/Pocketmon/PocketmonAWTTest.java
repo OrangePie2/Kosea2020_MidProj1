@@ -1,6 +1,8 @@
 package Pocketmon;
 
 import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -13,9 +15,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,7 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
-
+	static JPanel ImageT ;
+	
 	static TextField NoT1;
 	static TextField NameT1;
 	static TextField Type1T1;
@@ -41,7 +46,12 @@ public class PocketmonAWTTest {
 	static JLabel Specificity1T;
 	static JLabel Specificity2T;
 	static JLabel DescriptionT;
-
+	
+	//이미지 구현
+	static byte[] bytes;
+	static JLabel lblNewLabel_1;
+	
+	
 	static JTable table;
 	static DefaultTableModel model;
 	static JLabel jlabel;
@@ -86,9 +96,12 @@ public class PocketmonAWTTest {
 			model.setNumRows(0);
 			try {
 				table.removeAll();
-				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%' and name like '%"
-						+ NameT1.getText() + "%' and type1 like '%" + Type1T1.getText() + "%' and type2 like '%"
-						+ Type2T1.getText() + "%' and class like '%" + ClassT1.getText() + "%'";
+				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() 
+				+ "%' and name like '%"+ NameT1.getText() 
+				+ "%' and type1 like '%"+ Type1T1.getText() 
+				+ "%' and type2 like '%"+ Type2T1.getText() 
+				+ "%' and class like '%" + ClassT1.getText() 
+				+ "%'";
 				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
@@ -172,18 +185,6 @@ public class PocketmonAWTTest {
 	// 추가 버튼 클릭시 나오는 새창
 	public static class addbox implements ActionListener {
 		JTable table2;
-
-//		static String pic (String b) {
-//			String a=b;
-//			String a1;
-//			
-//			if(a==null) {
-//				a1="C:\\Users\\user\\Desktop\\pocket\\add이미지넣기전배경.jpg";
-//			}else {
-//				a1=picsave;
-//			}
-//			return a1;
-//		}
 
 		public addbox(JTable table2) {
 			this.table2 = table2;
@@ -286,21 +287,22 @@ public class PocketmonAWTTest {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+	
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
 			try {
-
 				int row = table.getSelectedRow();// 순서 값 불러오기
 				String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
 
-				System.out.println("107 lines : -------------------------");
+				System.out.println("291 lines : -------------------------");
 				String quary = "SELECT * FROM POCKETMON where no like '%" + no + "%'";
 				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
 				rs = pstm.executeQuery();
+				bytes = null;//DB이미지 구현
 				while (rs.next()) {
 					String No = rs.getString(1);
 					String Name = rs.getString(2);
@@ -310,6 +312,7 @@ public class PocketmonAWTTest {
 					String Specificity1 = rs.getString(6);
 					String Specificity2 = rs.getString(7);
 					String Description = rs.getString(8);
+					bytes = rs.getBytes(9);
 
 					NoT.setText(No);
 					NameT.setText(Name);
@@ -319,7 +322,10 @@ public class PocketmonAWTTest {
 					Specificity1T.setText(Specificity1);
 					Specificity2T.setText(Specificity2);
 					DescriptionT.setText(Description);
-
+					
+					//이미지 불러오기
+					Image image=lblNewLabel_1.getToolkit().createImage(bytes);
+					lblNewLabel_1.setIcon(new ImageIcon(image));
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
@@ -346,6 +352,26 @@ public class PocketmonAWTTest {
 
 	}
 
+	
+	public static class testbutton implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		System.out.println("test");
+	}
+}
+	public static class Pane extends JDesktopPane {
+		private Image image;
+
+		public Pane(Image image) {
+			this.image = image;
+		}
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(image, 0, 0, this);
+		}
+	}
+		
 	public static void main(String[] args) {
 		JFrame f = new JFrame("Pocketmon Test");
 		f.setIconImage(Toolkit.getDefaultToolkit()
@@ -412,11 +438,12 @@ public class PocketmonAWTTest {
 		f.getContentPane().setLayout(null);
 		// setBounds(x, y, width, height);
 
-		// 가운데 라벨
-		JLabel lblNewLabel_1 = new JLabel();
+		// 가운데 이미지
+		lblNewLabel_1 = new JLabel();
 		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\pika.jpg"));
 		lblNewLabel_1.setBounds(195, 60, 340, 250);
-		f.getContentPane().add(lblNewLabel_1);
+		//f.getContentPane().add(lblNewLabel_1);
+		f.add(lblNewLabel_1);
 
 		// 오른쪽 위 라벨
 		JLabel lblNewLabel_4 = new JLabel();
@@ -450,10 +477,16 @@ public class PocketmonAWTTest {
 		button1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uC544\uC774\uCF58.jpg"));
 		f.getContentPane().add(button1);
 		button1.setBounds(987, 133, 40, 24);
-
 		// 추가,삭제 버튼에 대한 리스너를 등록
 		button1.addActionListener(new listup(table));
 
+		//테스트 버튼
+				JButton button3 = new JButton("테스트");
+				f.add(button3);
+				button3.setBounds(900, 133, 80, 24);
+				button3.addActionListener(new testbutton());
+		
+		
 		// Search 파트 라벨 텍스트 시작
 		NoT1 = new TextField();
 		f.getContentPane().add(NoT1);
