@@ -29,8 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWTTest {
-	static JPanel ImageT ;
-	
+
 	static TextField NoT1;
 	static TextField NameT1;
 	static TextField Type1T1;
