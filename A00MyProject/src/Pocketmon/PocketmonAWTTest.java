@@ -39,6 +39,7 @@ public class PocketmonAWTTest {
 	static TextField Type1T1;
 	static TextField Type2T1;
 	static TextField ClassT1;
+	
 
 	// 메인 결과창
 	static JLabel NoT;
@@ -50,6 +51,16 @@ public class PocketmonAWTTest {
 	static JLabel Specificity2T;
 	static JLabel DescriptionT;
 
+	static String No;
+	static String Name;
+	static String Type1;
+	static String Type2;
+	static String Class;
+	static String Specificity1;
+	static String Specificity2;
+	static String Description;
+	
+	
 	// 이미지 구현
 	static byte[] bytes;
 	static JLabel Mainpic;
@@ -73,6 +84,17 @@ public class PocketmonAWTTest {
 	static JTextArea adddescriptionT;
 	
 	//rewrite
+	static JTextField renoT;
+	static JTextField renaT;
+	static JTextField ret1T;
+	static JTextField ret2T;
+	static JTextField reclT;
+	static JTextField res1T;
+	static JTextField res2T;
+	static JTextArea redeT;
+	static JScrollPane rejsp;
+	
+	//수정 그림 불러오기
 	static String piccome;
 	
 	
@@ -319,14 +341,14 @@ public class PocketmonAWTTest {
 				rs = pstm.executeQuery();
 				bytes = null;// DB이미지 구현
 				while (rs.next()) {
-					String No = rs.getString(1);
-					String Name = rs.getString(2);
-					String Type1 = rs.getString(3);
-					String Type2 = rs.getString(4);
-					String Class = rs.getString(5);
-					String Specificity1 = rs.getString(6);
-					String Specificity2 = rs.getString(7);
-					String Description = rs.getString(8);
+				    No = rs.getString(1);
+				    Name = rs.getString(2);
+					Type1 = rs.getString(3);
+					Type2 = rs.getString(4);
+					Class = rs.getString(5);
+					Specificity1 = rs.getString(6);
+					Specificity2 = rs.getString(7);
+					Description = rs.getString(8);
 					bytes = rs.getBytes(9);
 
 					NoT.setText(No);
@@ -401,15 +423,15 @@ public class PocketmonAWTTest {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("rewrite");
 
-				JTextField	renoT = new JTextField("renoT");
-				JTextField	renaT = new JTextField("renaT");
-				JTextField	ret1T = new JTextField("ret1T");
-				JTextField	ret2T = new JTextField("ret2T");
-				JTextField	reclT = new JTextField("reclT");
-				JTextField	res1T = new JTextField("res1T");
-				JTextField	res2T = new JTextField("res2T");
-				JTextArea	redeT = new JTextArea();
-				JScrollPane	rejsp = new JScrollPane(redeT);
+				renoT = new JTextField(No);
+				renaT = new JTextField(Name);
+				ret1T = new JTextField(Type1);
+			    ret2T = new JTextField(Type2);
+				reclT = new JTextField(Class);
+				res1T = new JTextField(Specificity1);
+				res2T = new JTextField(Specificity2);
+				redeT = new JTextArea(Description);
+				rejsp = new JScrollPane(redeT);
 				
 				//라벨에 텍스값 넣기
 				NoT.add(renoT);
@@ -445,33 +467,62 @@ public class PocketmonAWTTest {
 
 	}
 	
+	
 	// 수정2 기능
 		public static class rewrite2button implements ActionListener {
 			@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("rewrite2");
 					
-//					Connection conn = null;
-//					PreparedStatement pstm = null;
-//					ResultSet rs = null;
-//					try {
-//						int row = table.getSelectedRow();// 순서 값 불러오기
-//						String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
-	//
-//						System.out.println("373 lines : -------------------------");
-//						String quary = " FROM POCKETMON where NO = '" + no + "'";
-//						System.out.println(quary);
-	//
-//						conn = PocketmonDBconnection.getConnection();
-//						pstm = conn.prepareStatement(quary);
-//						rs = pstm.executeQuery();
-//					} catch (SQLException sqle) {
-//						System.out.println("SELECT문에서 예외 발생");
-//						sqle.printStackTrace();
-//					} // 연결 종류
+					Connection conn = null;
+					PreparedStatement pstm = null;
+					ResultSet rs = null;
+					FileInputStream imageInputStream = null;
 					
-				}
+						int row = table.getSelectedRow();// 순서 값 불러오기
+						String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
+						System.out.println("291 lines : -------------------------");
+						String quary = "SELECT * FROM POCKETMON where no like '%" + no + "%'";
+						System.out.println(quary);
+						
+					try {
+						conn = PocketmonDBconnection.getConnection();
+						pstm = conn.prepareStatement(
+								"UPDATE  POCKETMON SET "
+										+" NO="+"'"+renoT.getText()+"',"
+										+" NAME="+"'"+renaT.getText()+"',"
+							            +" TYPE1="+"'"+ret1T.getText()+"',"
+							            +" TYPE2="+"'"+ret2T.getText()+"',"
+							            +" CLASS="+"'"+reclT.getText()+"',"
+							            +" SPECIFICITY1="+"'"+res1T.getText()+"',"
+							            +" SPECIFICITY2="+"'"+res2T.getText()+"',"
+							            +" DESCRIPTION="+"'"+redeT.getText()+"',"
+										+" IMAGE= ?  "
+										+" WHERE NO ="+ "'" + no + "'");
+						try {
+							imageInputStream = new FileInputStream(new File(piccome));
+							System.out.println("Line495" + piccome);
+						} catch (FileNotFoundException e1) {
+							System.out.println(e1);
+							e1.printStackTrace();
+						}
+						pstm.setBinaryStream(1, imageInputStream);
+						pstm.execute();
+					} catch (SQLException sqle) {
+						System.out.println("Line 503: 수정 부분에서 예외 발생");
+						sqle.printStackTrace();
+					} // 연결 종류	
+	          		renoT.setVisible(false);
+					renaT.setVisible(false);
+					ret1T.setVisible(false);
+					ret2T.setVisible(false);
+					reclT.setVisible(false);
+					res1T.setVisible(false);
+					res2T.setVisible(false);
+					redeT.setVisible(false);
+					rejsp.setVisible(false);
 
+				}
 		}
 		
 		// 수정 그림불러오기 
@@ -479,13 +530,13 @@ public class PocketmonAWTTest {
 			@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("repicture2button ");
-					JFrame picJF = new JFrame();
-					FileDialog pico = new FileDialog(picJF, "File Open", FileDialog.LOAD);
+					f = new JFrame();
+					FileDialog pico = new FileDialog(f, "File Open", FileDialog.LOAD);
 					pico.setDirectory("C:\\Windows");
 					pico.setVisible(true);
 					piccome = pico.getDirectory() + pico.getFile();
 					System.out.println("133lines : " + piccome);
-					addjl.setIcon(new ImageIcon(piccome));
+					Mainpic.setIcon(new ImageIcon(piccome));
 				}
 		}
 
