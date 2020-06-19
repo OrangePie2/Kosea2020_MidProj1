@@ -18,6 +18,7 @@ public class SelectAddDeleteMain {
 	public static void main(String[] args) {
 		// JFrame swing에서 사용하는 frame
 		JFrame frame = new JFrame("참가자명단프로그램");
+		frame.setResizable(false);
 		frame.setPreferredSize(new Dimension(400, 200));
 		frame.setLocation(500, 400);
 		Container contentPane = frame.getContentPane();
@@ -50,10 +51,8 @@ public class SelectAddDeleteMain {
 		// 추가,삭제 버튼에 대한 리스너를 등록
 		button1.addActionListener(new SelectAdd(table,text1,text2,text3));
 		button2.addActionListener(new SelectDelete(table));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-
 	}
 
 }

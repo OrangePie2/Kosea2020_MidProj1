@@ -1,5 +1,7 @@
 package Pocketmon;
 
+import java.awt.Button;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Image;
 import java.awt.TextField;
@@ -30,16 +32,19 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class PocketmonAWT {
-
-	static JFrame f ;
-	static JLabel backgroundlabel;	
 	
+	static String addquary2;
+	static boolean imageChanged = false;
+	static boolean addimageChanged = false;
+	
+	static JFrame f;
+	static JLabel backgroundlabel;
+
 	static TextField NoT1;
 	static TextField NameT1;
 	static TextField Type1T1;
 	static TextField Type2T1;
 	static TextField ClassT1;
-	
 
 	// 메인 결과창
 	static JLabel NoT;
@@ -59,8 +64,7 @@ public class PocketmonAWT {
 	static String Specificity1;
 	static String Specificity2;
 	static String Description;
-	
-	
+
 	// 이미지 구현
 	static byte[] bytes;
 	static JLabel Mainpic;
@@ -82,8 +86,8 @@ public class PocketmonAWT {
 	static JTextField addspecificity1T;
 	static JTextField addspecificity2T;
 	static JTextArea adddescriptionT;
-	
-	//rewrite
+
+	// rewrite
 	static JTextField renoT;
 	static JTextField renaT;
 	static JTextField ret1T;
@@ -92,16 +96,23 @@ public class PocketmonAWT {
 	static JTextField res1T;
 	static JTextField res2T;
 	static JTextArea redeT;
-	static JScrollPane	rejsp;
-	
-	//수정 그림 불러오기
+	static JScrollPane rejsp;
+
+	// 수정 그림 불러오기
 	static String piccome;
-	
-	
 
 	static String a;
 	static String b;
 	static int d;
+
+	// 체크
+	static JFrame rechick;
+	// 삭제
+	static JFrame redelete;
+
+	static JButton button4;
+	static JButton button5;
+	static JButton button6;
 
 	public static class PocketmonExitClass extends WindowAdapter {
 		public void windowClosing(WindowEvent e) {
@@ -109,7 +120,7 @@ public class PocketmonAWT {
 		}
 
 	}
-	
+
 	// 검색창에서 목록 구현
 	public static class listup implements ActionListener {
 		JTable table1;
@@ -127,7 +138,7 @@ public class PocketmonAWT {
 				table.removeAll();
 				String quary = "SELECT * FROM POCKETMON where No like '%" + NoT1.getText() + "%' and name like '%"
 						+ NameT1.getText() + "%' and type1 like '%" + Type1T1.getText() + "%' and type2 like '%"
-						+ Type2T1.getText() + "%' and class like '%" + ClassT1.getText() + "%'"+" order by "+" No";
+						+ Type2T1.getText() + "%' and class like '%" + ClassT1.getText() + "%'" + " order by " + " No";
 				System.out.println(quary);
 
 				conn = PocketmonDBconnection.getConnection();
@@ -141,13 +152,13 @@ public class PocketmonAWT {
 					arr[3] = rs.getString(4);
 					arr[4] = rs.getString(5);
 					model = (DefaultTableModel) table1.getModel();
-
 					model.addRow(arr);
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
 				sqle.printStackTrace();
 			} // 연결 종류
+			
 		}
 
 	}
@@ -163,6 +174,7 @@ public class PocketmonAWT {
 			System.out.println("133lines : " + picsave);
 			// add JLabel에 이미지 넣기
 			addjl.setIcon(new ImageIcon(picsave));
+			addimageChanged = true;
 		}
 	}
 
@@ -193,25 +205,40 @@ public class PocketmonAWT {
 			} // 연결 종류
 
 			try {
+				
+				if (addimageChanged == true) {
+					addquary2 = "INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description, IMAGE) "
+							+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'" + addtype1T.getText()
+							+ "'," + "'" + addtype2T.getText() + "'," + "'" + addclassT.getText() + "'," + "'"
+							+ addspecificity1T.getText() + "'," + "'" + addspecificity2T.getText() + "'," + "'"
+							+ adddescriptionT.getText() + "'," + "?)";
+				} else {
+					addquary2 = "INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description) "
+							+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'" + addtype1T.getText()
+							+ "'," + "'" + addtype2T.getText() + "'," + "'" + addclassT.getText() + "'," + "'"
+							+ addspecificity1T.getText() + "'," + "'" + addspecificity2T.getText() + "'," + "'"
+							+ adddescriptionT.getText() + "')";
+				}
+				
+				String quary=addquary2;
+				System.out.println("Line 223: "+quary);
 				conn = PocketmonDBconnection.getConnection();
-				pstm = conn.prepareStatement(
-						"INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description, IMAGE) "
-								+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'"
-								+ addtype1T.getText() + "'," + "'" + addtype2T.getText() + "'," + "'"
-								+ addclassT.getText() + "'," + "'" + addspecificity1T.getText() + "'," + "'"
-								+ addspecificity2T.getText() + "'," + "'" + adddescriptionT.getText() + "'," + "?)");
+				pstm = conn.prepareStatement(quary);
+				
+				if (addimageChanged == true) {
 				try {
 					imageInputStream = new FileInputStream(new File(picsave));
-					System.out.println("Line186" + picsave);
 				} catch (FileNotFoundException e1) {
 					System.out.println(e1);
-					e1.printStackTrace();
-				}
+					e1.printStackTrace();}
 				pstm.setBinaryStream(1, imageInputStream);
+				}
+				
 				pstm.execute();
+			
+				
 			} catch (SQLException sqle) {
-				System.out.println("SELECT2문에서 예외 발생");
-				sqle.printStackTrace();
+				System.out.println("SELECT2문에서 예외 발생: "+sqle);
 			} // 연결 종류
 		}
 	}
@@ -268,7 +295,7 @@ public class PocketmonAWT {
 			addspecificity2T = new JTextField();
 			adddescriptionT = new JTextArea();
 			JScrollPane jsp = new JScrollPane(adddescriptionT);
-			
+
 			addnoT.setBounds(470, 20, 70, 20);
 			addnameT.setBounds(610, 20, 150, 20);
 			addtype1T.setBounds(480, 50, 110, 20);
@@ -341,8 +368,8 @@ public class PocketmonAWT {
 				rs = pstm.executeQuery();
 				bytes = null;// DB이미지 구현
 				while (rs.next()) {
-				    No = rs.getString(1);
-				    Name = rs.getString(2);
+					No = rs.getString(1);
+					Name = rs.getString(2);
 					Type1 = rs.getString(3);
 					Type2 = rs.getString(4);
 					Class = rs.getString(5);
@@ -368,6 +395,7 @@ public class PocketmonAWT {
 				System.out.println("SELECT문에서 예외 발생");
 				sqle.printStackTrace();
 			} // 연결 종류
+			button4.setEnabled(true);
 		}
 
 		@Override
@@ -413,119 +441,229 @@ public class PocketmonAWT {
 				System.out.println("SELECT문에서 예외 발생");
 				sqle.printStackTrace();
 			} // 연결 종류
+
+			redelete = new JFrame();
+			Button button8 = new Button("삭제확인");
+			button8.addActionListener(new listup(table));
+			button8.addActionListener(new Redelete());
+			button8.setBounds(55, 40, 90, 20);
+			redelete.add(button8);
+			redelete.setLayout(null);
+			redelete.setBounds(300, 180, 200, 100);
+			redelete.setVisible(true);
+
 		}
 
+	}
+
+	public static class Redelete implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("Redelete");
+			redelete.dispose();
+		}
 	}
 
 	// 수정 기능
 	public static class rewritebutton implements ActionListener {
 		@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("rewrite");
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("rewrite");
 
-				renoT = new JTextField(No);
-				renaT = new JTextField(Name);
-				ret1T = new JTextField(Type1);
-			    ret2T = new JTextField(Type2);
-				reclT = new JTextField(Class);
-				res1T = new JTextField(Specificity1);
-				res2T = new JTextField(Specificity2);
-				redeT = new JTextArea(Description);
-				rejsp = new JScrollPane(redeT);
-				
-				//라벨에 텍스값 넣기
-				NoT.add(renoT);
-				NameT.add(renaT);
-				Type1T.add(ret1T);
-				Type2T.add(ret2T);
-				ClassT.add(reclT);
-				Specificity1T.add(res1T);
-			    Specificity2T.add(res2T);
-			    DescriptionT.add(rejsp);
-			    
-				//택스트 상자 사이즈
-				renoT.setSize(90, 20);
-				renaT.setSize(90, 20);
-				ret1T.setSize(90, 20);
-				ret2T.setSize(90, 20);
-				reclT.setSize(90, 20);
-				res1T.setSize(90, 20);
-				res2T.setSize(90, 20);
-				redeT.setSize(680, 90);
-				rejsp.setSize(680, 90);
-				//(0, 0, 725, 431);
-				JButton button5 = new JButton("수정확인");
-				backgroundlabel.add(button5);
-				button5.setBounds(628, 290, 90, 25);
-				button5.addActionListener(new rewrite2button());
-				
-				JButton button6 = new JButton("그림");
-				backgroundlabel.add(button6);
-				button6.setBounds(560, 290, 60, 25);
-				button6.addActionListener(new repicture2button());			
-			}
+			renoT = new JTextField(No);
+			renaT = new JTextField(Name);
+			ret1T = new JTextField(Type1);
+			ret2T = new JTextField(Type2);
+			reclT = new JTextField(Class);
+			res1T = new JTextField(Specificity1);
+			res2T = new JTextField(Specificity2);
+			redeT = new JTextArea(Description);
+			rejsp = new JScrollPane(redeT);
+
+			// 라벨에 텍스값 넣기
+			NoT.add(renoT);
+			NameT.add(renaT);
+			Type1T.add(ret1T);
+			Type2T.add(ret2T);
+			ClassT.add(reclT);
+			Specificity1T.add(res1T);
+			Specificity2T.add(res2T);
+			DescriptionT.add(rejsp);
+
+			// 택스트 상자 사이즈
+			renoT.setSize(90, 20);
+			renaT.setSize(90, 20);
+			ret1T.setSize(90, 20);
+			ret2T.setSize(90, 20);
+			reclT.setSize(90, 20);
+			res1T.setSize(90, 20);
+			res2T.setSize(90, 20);
+			redeT.setSize(680, 90);
+			rejsp.setSize(680, 90);
+			// (0, 0, 725, 431);
+			button5 = new JButton("수정확인");
+			backgroundlabel.add(button5);
+			button5.setBounds(628, 290, 90, 25);
+			button5.addActionListener(new rewrite2button());
+
+			button6 = new JButton("그림");
+			backgroundlabel.add(button6);
+			button6.setBounds(560, 290, 60, 25);
+			button6.addActionListener(new repicture2button());
+
+		}
 
 	}
-	
+
 	// 수정2 기능
-		public static class rewrite2button implements ActionListener {
-			@Override
-				public void actionPerformed(ActionEvent e) {
-					System.out.println("rewrite2");
-					
-					Connection conn = null;
-					PreparedStatement pstm = null;
-					ResultSet rs = null;
+	public static class rewrite2button implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("rewrite2");
+
+			Connection conn = null;
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			FileInputStream imageInputStream = null;
+
+			int row = table.getSelectedRow();// 순서 값 불러오기
+			String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
+
+			try {
+				conn = PocketmonDBconnection.getConnection();
+
+				String query = "UPDATE  POCKETMON SET " + " NO=" + "'" + renoT.getText() + "'," + " NAME=" + "'"
+						+ renaT.getText() + "'," + " TYPE1=" + "'" + ret1T.getText() + "'," + " TYPE2=" + "'"
+						+ ret2T.getText() + "'," + " CLASS=" + "'" + reclT.getText() + "'," + " SPECIFICITY1=" + "'"
+						+ res1T.getText() + "'," + " SPECIFICITY2=" + "'" + res2T.getText() + "'," + " DESCRIPTION="
+						+ "'" + redeT.getText();// + " IMAGE=?" + " WHERE NO =" + "'" + no + "'";
+
+				if (imageChanged == true) {
+					query += "', IMAGE=?" + " WHERE NO =" + "'" + no + "'";
 					try {
-						int row = table.getSelectedRow();// 순서 값 불러오기
-						String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기				
-						System.out.println("482 lines : -------------------------");
-						String quary = "UPDATE POCKETMON SET "
-								       +"NO="+"'"+renoT.getText()+"',"
-						               +" NAME="+"'"+renaT.getText()+"',"
-						               +" TYPE1="+"'"+ret1T.getText()+"',"
-						               +" TYPE2="+"'"+ret2T.getText()+"',"
-						               +" CLASS="+"'"+reclT.getText()+"',"
-						               +" SPECIFICITY1="+"'"+res1T.getText()+"',"
-						               +" SPECIFICITY2="+"'"+res2T.getText()+"',"
-						               +" DESCRIPTION="+"'"+redeT.getText()+"'"
-						               +" WHERE NO ="+ "'" + no + "'";
-						System.out.println(quary);
-						conn = PocketmonDBconnection.getConnection();
-						pstm = conn.prepareStatement(quary);
-						rs = pstm.executeQuery();
-					} catch (SQLException sqle) {
-						System.out.println("SELECT문에서 예외 발생");
-						sqle.printStackTrace();
-					} // 연결 종류
-					renoT.setVisible(false);
-					renaT.setVisible(false);
-					ret1T.setVisible(false);
-					ret2T.setVisible(false);
-					reclT.setVisible(false);
-					res1T.setVisible(false);
-					res2T.setVisible(false);
-					redeT.setVisible(false);
-					rejsp.setVisible(false);
-					
+						imageInputStream = new FileInputStream(new File(piccome));
+						System.out.println("Line495" + piccome);
+
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+						System.out.println(e1);
+					}
+
+				} else {
+					query += "' WHERE NO =" + "" + no + "";
+				}
+				System.out.println("538 lines : ---------------------------------");
+				System.out.println("539 lines : " + query);
+				pstm = conn.prepareStatement(query);
+				if (imageChanged == true) {
+					pstm.setBinaryStream(1, imageInputStream);
 				}
 
+
+				pstm.execute();
+			} catch (SQLException sqle) {
+				System.out.println("Line 553: 수정 부분에서 예외 발생");
+				sqle.printStackTrace();
+
+			} // 연결 종류
+
+			rechick = new JFrame();
+			rechick.setUndecorated(true);
+			JButton button7 = new JButton("수정확인");
+			button7.addActionListener(new listup(table));
+			button7.addActionListener(new Recheck());
+			button7.setBounds(55, 40, 90, 20);
+			rechick.add(button7);
+			rechick.setLayout(null);
+			rechick.setBounds(300, 180, 200, 100);
+			rechick.setVisible(true);
+			button4.setEnabled(false);
+			button5.setVisible(false);
+			button6.setVisible(false);
+
 		}
-		
-		// 수정 그림불러오기 
-		public static class repicture2button implements ActionListener {
-			@Override
-				public void actionPerformed(ActionEvent e) {
-					System.out.println("repicture2button ");
-					f = new JFrame();
-					FileDialog pico = new FileDialog(f, "File Open", FileDialog.LOAD);
-					pico.setDirectory("C:\\Windows");
-					pico.setVisible(true);
-					piccome = pico.getDirectory() + pico.getFile();
-					System.out.println("133lines : " + piccome);
-					Mainpic.setIcon(new ImageIcon(piccome));
+
+	}
+
+	public static class Recheck implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			Connection conn = null;
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			try {
+				System.out.println("291 lines : -------------------------");
+				String quary = "SELECT * FROM POCKETMON where no =" + NoT.getText();
+				System.out.println(quary);
+
+				conn = PocketmonDBconnection.getConnection();
+				pstm = conn.prepareStatement(quary);
+				rs = pstm.executeQuery();
+				bytes = null;// DB이미지 구현
+				while (rs.next()) {
+					No = rs.getString(1);
+					Name = rs.getString(2);
+					Type1 = rs.getString(3);
+					Type2 = rs.getString(4);
+					Class = rs.getString(5);
+					Specificity1 = rs.getString(6);
+					Specificity2 = rs.getString(7);
+					Description = rs.getString(8);
+					bytes = rs.getBytes(9);
+
+					NoT.setText(No);
+					NameT.setText(Name);
+					Type1T.setText(Type1);
+					Type2T.setText(Type2);
+					ClassT.setText(Class);
+					Specificity1T.setText(Specificity1);
+					Specificity2T.setText(Specificity2);
+					DescriptionT.setText(Description);
+
+					// 이미지 불러오기
+					Image image = Mainpic.getToolkit().createImage(bytes);
+					Mainpic.setIcon(new ImageIcon(image));
 				}
+			} catch (SQLException sqle) {
+				System.out.println("SELECT문에서 예외 발생");
+				sqle.printStackTrace();
+			} // 연결 종류
+
+			System.out.println("Recheck");
+			renoT.setVisible(false);
+			renaT.setVisible(false);
+			ret1T.setVisible(false);
+			ret2T.setVisible(false);
+			reclT.setVisible(false);
+			res1T.setVisible(false);
+			res2T.setVisible(false);
+			redeT.setVisible(false);
+			rejsp.setVisible(false);
+
+			button5.setVisible(false);
+			button6.setVisible(false);
+			rechick.dispose();
 		}
+	}
+
+	// 수정 그림불러오기
+	public static class repicture2button implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("repicture2button ");
+			f = new JFrame();
+			FileDialog pico = new FileDialog(f, "File Open", FileDialog.LOAD);
+			pico.setDirectory("C:\\Windows");
+			pico.setVisible(true);
+			piccome = pico.getDirectory() + pico.getFile();
+			System.out.println("133lines : " + piccome);
+			Mainpic.setIcon(new ImageIcon(piccome));
+			imageChanged = true;
+		}
+	}
+	
+
 
 	public static void main(String[] args) {
 		f = new JFrame("Pocketmon Test");
@@ -575,7 +713,7 @@ public class PocketmonAWT {
 		Specificity1T.setBounds(85, 65, 90, 20);
 		Specificity2T.setBounds(85, 100, 90, 20);
 
-		// swing Table 설정 방법
+		// 목로값 불러오기 swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
 		String colname[] = { "No.", "Name", "Type1", "Type2", "Class" };
 		model = new DefaultTableModel(colname, 0) {
@@ -587,8 +725,6 @@ public class PocketmonAWT {
 		JScrollPane js = new JScrollPane(table);
 		js.setBounds(0, 0, 300, 265);
 		jp5.add(js);
-
-		// 마우스 클릭
 		table.addMouseListener(new MyMouseListener());
 		f.getContentPane().setLayout(null);
 		// setBounds(x, y, width, height);
@@ -642,7 +778,8 @@ public class PocketmonAWT {
 		button3.addActionListener(new deletebutton());
 
 		// 수정테스트 버튼
-		JButton button4 = new JButton("수정");
+		button4 = new JButton("수정");
+		button4.setEnabled(false);
 		f.add(button4);
 		button4.setBounds(800, 133, 60, 24);
 		button4.addActionListener(new rewritebutton());
