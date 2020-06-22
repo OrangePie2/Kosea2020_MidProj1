@@ -1,8 +1,8 @@
 package Pocketmon;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -502,15 +502,21 @@ public class PocketmonAWT {
 			DescriptionT.add(rejsp);
 
 			// 택스트 상자 사이즈
-			renoT.setSize(90, 20);
-			renaT.setSize(90, 20);
+			renoT.setBounds(0, 5, 50, 35);
+			renoT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 20));
+			renaT.setBounds(0, 7, 200, 30);
+			renaT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 20));
 			ret1T.setSize(90, 20);
 			ret2T.setSize(90, 20);
-			reclT.setSize(90, 20);
+			reclT.setBounds(0, 0, 100, 27);
 			res1T.setSize(90, 20);
 			res2T.setSize(90, 20);
 			redeT.setSize(680, 90);
 			rejsp.setSize(680, 90);
+			
+			
+			
+			
 			// (0, 0, 725, 431);
 			button5 = new JButton();
 			button5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
@@ -773,13 +779,20 @@ public class PocketmonAWT {
 		Specificity2T = new JLabel("S2");
 
 		// 라벨 텍스트 위치
-		NoT.setBounds(80, 25, 90, 20);
-		NameT.setBounds(295, 15, 90, 20);
-		Type1T.setBounds(110, 23, 90, 20);
-		Type2T.setBounds(110, 50, 90, 20);
-		ClassT.setBounds(30, 95, 90, 20);
+		NoT.setBounds(80, 10, 90, 40);
+		NoT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 30));
+		NameT.setBounds(320, 5, 300, 40);
+		NameT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 30));
+		Type1T.setBounds(110, 20, 90, 20);
+		Type1T.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 18));
+		Type2T.setBounds(110, 44, 90, 20);
+		Type2T.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 18));
+		ClassT.setBounds(25, 95, 200, 27);
+		ClassT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 25));
 		Specificity1T.setBounds(30, 160, 90, 20);
+		Specificity1T.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 18));
 		Specificity2T.setBounds(30, 205, 90, 20);
+		Specificity2T.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 18));
 
 		// 목로값 불러오기 swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
@@ -880,6 +893,7 @@ public class PocketmonAWT {
 		DescriptionT = new JLabel("설명");
 		descriptionlabel.add(DescriptionT);
 		DescriptionT.setBounds(25, 20, 620, 60);
+		DescriptionT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 14));
 
 		// 데이터 추가 
 		JButton addButton = new JButton();
