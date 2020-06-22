@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Image;
 import java.awt.TextField;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -110,7 +109,7 @@ public class PocketmonAWT {
 	// 삭제
 	static JFrame redelete;
 
-	static JButton button4;
+	static JButton rewritebutton;
 	static JButton button5;
 	static JButton button6;
 
@@ -172,11 +171,27 @@ public class PocketmonAWT {
 			pic.setVisible(true);
 			picsave = pic.getDirectory() + pic.getFile();
 			System.out.println("133lines : " + picsave);
+			
+			//이미지크기 맞추기
+			ImageIcon ii=new ImageIcon(picsave);
+			Dimension d= addjl.getSize();
+			ii = imageSetsize(ii, d.width, d.height);
+			
 			// add JLabel에 이미지 넣기
-			addjl.setIcon(new ImageIcon(picsave));
+			addjl.setIcon(ii);
 			addimageChanged = true;
 		}
 	}
+	//Imgae변환 (이미지 아이콘 품질 깨지지 않고 변환하기 위해)
+	
+	public static ImageIcon imageSetsize(ImageIcon icon, int x, int y) {
+		Image a = icon.getImage(); // ImageIcon Imgae변환 (이미지 아이콘 품질 깨지지 않고 변환하기 위해)
+		Image b = a.getScaledInstance(x, y, java.awt.Image.SCALE_SMOOTH); // (image함수 getScaledInstance로 품질 유지한 채// 사이즈
+																			// 변경)
+		ImageIcon c = new ImageIcon(b);
+		return c;
+	}
+	
 
 	public static class adddata implements ActionListener {
 
@@ -255,56 +270,32 @@ public class PocketmonAWT {
 			JFrame addJF = new JFrame("데이터 추가 입력");
 			selectpicture SA3 = new selectpicture();
 			adddata adddata = new adddata();
-
+			JLabel addstatuslabel = new JLabel();
+			
+			
 			System.out.println("197lines : ");
-
-			// add 파트 라벨 구현 및 위치 크기
-			JLabel addno = new JLabel("No  . :");
-			JLabel addname = new JLabel("Name :");
-			JLabel addtype1 = new JLabel("Type1 :");
-			JLabel addtype2 = new JLabel("Type2 :");
-			JLabel addclass = new JLabel("Class :");
-			JLabel addspecificity1 = new JLabel("Specificity1 :");
-			JLabel addspecificity2 = new JLabel("Specificity2 :");
-			JLabel adddescription = new JLabel("Description :");
-			addno.setBounds(430, 20, 100, 20);
-			addname.setBounds(560, 20, 100, 20);
-			addtype1.setBounds(430, 50, 100, 20);
-			addtype2.setBounds(600, 50, 100, 20);
-			addclass.setBounds(430, 135, 100, 20);
-			addspecificity1.setBounds(430, 80, 100, 20);
-			addspecificity2.setBounds(630, 80, 100, 20);
-			adddescription.setBounds(430, 190, 100, 20);
-			addJF.getContentPane().add(addno);
-			addJF.getContentPane().add(addname);
-			addJF.getContentPane().add(addtype1);
-			addJF.getContentPane().add(addtype2);
-			addJF.getContentPane().add(addclass);
-			addJF.getContentPane().add(addspecificity1);
-			addJF.getContentPane().add(addspecificity2);
-			addJF.getContentPane().add(adddescription);
 
 			// add 파트 텍스트필드 구현 및 위치 크기
 			addnoT = new JTextField(b);
 			addnoT.setEditable(false);
-			addnameT = new JTextField();
-			addtype1T = new JTextField();
-			addtype2T = new JTextField();
-			addclassT = new JTextField();
-			addspecificity1T = new JTextField();
-			addspecificity2T = new JTextField();
-			adddescriptionT = new JTextArea();
+			addnameT = new JTextField("이름");
+			addtype1T = new JTextField("타입1");
+			addtype2T = new JTextField("타입2");
+			addclassT = new JTextField("클래스");
+			addspecificity1T = new JTextField("S1");
+			addspecificity2T = new JTextField("S2");
+			adddescriptionT = new JTextArea("설명");
 			JScrollPane jsp = new JScrollPane(adddescriptionT);
 
-			addnoT.setBounds(470, 20, 70, 20);
-			addnameT.setBounds(610, 20, 150, 20);
-			addtype1T.setBounds(480, 50, 110, 20);
-			addtype2T.setBounds(650, 50, 110, 20);
-			addclassT.setBounds(430, 160, 330, 20);
-			addspecificity1T.setBounds(430, 105, 130, 20);
-			addspecificity2T.setBounds(630, 105, 130, 20);
-
-			jsp.setBounds(430, 215, 330, 100);
+			addnoT.setBounds(499, 41, 40, 21);
+			addnameT.setBounds(646, 41, 113, 21);
+			addtype1T.setBounds(528, 78, 47, 21);
+			addtype2T.setBounds(711, 78, 47, 21);
+			addclassT.setBounds(455, 195, 302, 20);
+			addspecificity1T.setBounds(454, 133, 117, 20);
+			addspecificity2T.setBounds(640, 133, 117, 20);
+			jsp.setBounds(445, 260, 321, 98);
+			
 			addJF.getContentPane().add(addnoT);
 			addJF.getContentPane().add(addnameT);
 			addJF.getContentPane().add(addtype1T);
@@ -315,33 +306,38 @@ public class PocketmonAWT {
 			addJF.getContentPane().add(jsp);
 
 			// 그림 불러오기 버튼
-			JButton addpicbut = new JButton("그림");
-			addpicbut.setBounds(430, 320, 70, 20);
+			JButton addpicbut = new JButton();
+			addpicbut.setBounds(445, 370, 70, 20);
+			addpicbut.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\imagebutton89x30.png"));
 			addJF.getContentPane().add(addpicbut);
 			addpicbut.addActionListener(SA3);
 
 			// 입력값 저장 버튼
-			JButton addsavebut = new JButton("입력");
-			addsavebut.setBounds(690, 320, 70, 20);
+			JButton addsavebut = new JButton();
+			addsavebut.setBounds(695, 370, 70, 20);
+			addsavebut.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
 			addJF.getContentPane().add(addsavebut);
 			addsavebut.addActionListener(adddata);
 
 			// add JLabel 구현
 			addjl = new JLabel();
-			addjl.setBounds(20, 15, 390, 330);
+			addjl.setBounds(39, 40, 352, 352);
 			// String pic2=pic(picsave);
 			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\lugia.jpg"));
 			addJF.getContentPane().add(addjl);
 
 			// add backLabel 구현
 			JLabel addBackLabel = new JLabel();
-			addBackLabel.setBounds(0, 0, 800, 400);
-			addBackLabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\addback.jpg"));
+			addBackLabel.setBounds(0, 0, 417, 432);
+			addBackLabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\popimage_417x432.png"));
 			addJF.getContentPane().add(addBackLabel);
 
 			// add프레임 구현
+			addJF.add(addstatuslabel);
+			addstatuslabel.setBounds(417, 0, 415, 432);
+			addstatuslabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\popsearch415x432.png"));
 			addJF.getContentPane().setLayout(null);
-			addJF.setBounds(250, 250, 800, 400);
+			addJF.setBounds(250, 250, 848, 470);
 			addJF.setVisible(true);
 		}
 	}
@@ -389,13 +385,18 @@ public class PocketmonAWT {
 
 					// 이미지 불러오기
 					Image image = Mainpic.getToolkit().createImage(bytes);
-					Mainpic.setIcon(new ImageIcon(image));
+					// 이미지 크기맞추기
+					ImageIcon ii=new ImageIcon(image);
+					Dimension d= Mainpic.getSize();
+					ii = imageSetsize(ii, d.width, d.height);
+					
+					Mainpic.setIcon(ii);
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
 				sqle.printStackTrace();
 			} // 연결 종류
-			button4.setEnabled(true);
+			rewritebutton.setEnabled(true);
 		}
 
 		@Override
@@ -443,13 +444,23 @@ public class PocketmonAWT {
 			} // 연결 종류
 
 			redelete = new JFrame();
-			Button button8 = new Button("삭제확인");
+			JLabel red= new JLabel();
+			redelete.setUndecorated(true);
+			
+			JButton button8 = new JButton();
+			button8.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
 			button8.addActionListener(new listup(table));
 			button8.addActionListener(new Redelete());
-			button8.setBounds(55, 40, 90, 20);
-			redelete.add(button8);
+			button8.setBounds(160, 85, 89, 30);
+			
+			red.add(button8);
+			red.setBounds(0, 0, 400, 200);
+			red.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\smallpop.jpg"));
+			
+			
+			redelete.add(red);
 			redelete.setLayout(null);
-			redelete.setBounds(300, 180, 200, 100);
+			redelete.setBounds(340, 200, 400, 200);
 			redelete.setVisible(true);
 
 		}
@@ -501,14 +512,16 @@ public class PocketmonAWT {
 			redeT.setSize(680, 90);
 			rejsp.setSize(680, 90);
 			// (0, 0, 725, 431);
-			button5 = new JButton("수정확인");
+			button5 = new JButton();
+			button5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
 			backgroundlabel.add(button5);
-			button5.setBounds(628, 290, 90, 25);
+			button5.setBounds(598, 357, 70, 20);
 			button5.addActionListener(new rewrite2button());
 
-			button6 = new JButton("그림");
+			button6 = new JButton();
 			backgroundlabel.add(button6);
-			button6.setBounds(560, 290, 60, 25);
+			button6.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\imagebutton89x30.png"));
+			button6.setBounds(598, 335, 70, 20);
 			button6.addActionListener(new repicture2button());
 
 		}
@@ -569,15 +582,23 @@ public class PocketmonAWT {
 
 			rechick = new JFrame();
 			rechick.setUndecorated(true);
-			JButton button7 = new JButton("수정확인");
+			JLabel rcl= new JLabel();
+			
+			JButton button7 = new JButton();
 			button7.addActionListener(new listup(table));
 			button7.addActionListener(new Recheck());
-			button7.setBounds(55, 40, 90, 20);
-			rechick.add(button7);
+			button7.setBounds(160, 85, 89, 30);
+			button7.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
+			
+			rcl.setBounds(0,0, 400, 200);
+			rcl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\smallpop.jpg"));
+			rcl.add(button7);
+			
+			rechick.add(rcl);
 			rechick.setLayout(null);
-			rechick.setBounds(300, 180, 200, 100);
+			rechick.setBounds(348, 200, 400, 200);
 			rechick.setVisible(true);
-			button4.setEnabled(false);
+			rewritebutton.setEnabled(false);
 			button5.setVisible(false);
 			button6.setVisible(false);
 
@@ -623,7 +644,13 @@ public class PocketmonAWT {
 
 					// 이미지 불러오기
 					Image image = Mainpic.getToolkit().createImage(bytes);
-					Mainpic.setIcon(new ImageIcon(image));
+					
+					// 이미지 크기맞추기
+					ImageIcon ii=new ImageIcon(image);
+					Dimension d= Mainpic.getSize();
+					ii = imageSetsize(ii, d.width, d.height);
+					
+					Mainpic.setIcon(ii);
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
@@ -658,60 +685,101 @@ public class PocketmonAWT {
 			pico.setVisible(true);
 			piccome = pico.getDirectory() + pico.getFile();
 			System.out.println("133lines : " + piccome);
-			Mainpic.setIcon(new ImageIcon(piccome));
+			
+			//이미지크기 맞추기
+			ImageIcon ii=new ImageIcon(piccome);
+			Dimension d= Mainpic.getSize();
+			ii = imageSetsize(ii, d.width, d.height);
+			
+			// add JLabel에 이미지 넣기
+			Mainpic.setIcon(ii);
 			imageChanged = true;
 		}
 	}
 	
+	public static class Rdbutton implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Connection conn = null;
+			PreparedStatement pstm = null;
+			ResultSet rs = null;
+			try {
+				int rd= (int) ((Math.random()*150)+1);
+				String no = Integer.toString(rd); 
+				String quary = "SELECT * FROM POCKETMON where no like '%" + no + "%'";
+				
 
+				conn = PocketmonDBconnection.getConnection();
+				pstm = conn.prepareStatement(quary);
+				rs = pstm.executeQuery();
+				bytes = null;// DB이미지 구현
+				while (rs.next()) {
+					No = rs.getString(1);
+					Name = rs.getString(2);
+					Type1 = rs.getString(3);
+					Type2 = rs.getString(4);
+					Class = rs.getString(5);
+					Specificity1 = rs.getString(6);
+					Specificity2 = rs.getString(7);
+					Description = rs.getString(8);
+					bytes = rs.getBytes(9);
+
+					NoT.setText(No);
+					NameT.setText(Name);
+					Type1T.setText(Type1);
+					Type2T.setText(Type2);
+					ClassT.setText(Class);
+					Specificity1T.setText(Specificity1);
+					Specificity2T.setText(Specificity2);
+					DescriptionT.setText(Description);
+
+					// 이미지 불러오기
+					Image image = Mainpic.getToolkit().createImage(bytes);
+					// 이미지 크기맞추기
+					ImageIcon ii=new ImageIcon(image);
+					Dimension d= Mainpic.getSize();
+					ii = imageSetsize(ii, d.width, d.height);
+					
+					Mainpic.setIcon(ii);
+				}
+			} catch (SQLException sqle) {
+				System.out.println("SELECT문에서 예외 발생");
+				sqle.printStackTrace();
+			} // 연결 종류
+			
+		}
+	}
+	
 
 	public static void main(String[] args) {
 		f = new JFrame("Pocketmon Test");
-		f.setIconImage(Toolkit.getDefaultToolkit()
-				.getImage("C:\\Users\\user\\Desktop\\pocket\\\uC804\uCCB4\uCC3D\uC544\uC774\uCF58.jpg"));
 		PocketmonExitClass ec = new PocketmonExitClass();
 		f.getContentPane().setLayout(null);
 
+		//Scroll panel
 		JPanel jp5 = new JPanel();
-		jp5.setBounds(730, 160, 300, 265);
+		jp5.setBounds(733, 248, 290, 235);
 		f.getContentPane().add(jp5);
 		jp5.setLayout(null);
 
-		// 라벨 시작
-		JLabel No = new JLabel("No.      : ");
-		JLabel Name = new JLabel("Name : ");
-		JLabel Type1 = new JLabel("Type1 : ");
-		JLabel Type2 = new JLabel("Type2 : ");
-		JLabel Class = new JLabel("Class :");
-		JLabel Specificity1 = new JLabel("Specificity1:");
-		JLabel Specificity2 = new JLabel("Specificity2:");
-
-		// 라벨 위치
-		No.setBounds(10, 10, 50, 20);
-		Name.setBounds(10, 40, 50, 20);
-		Type1.setBounds(10, 70, 50, 20);
-		Type2.setBounds(10, 100, 50, 20);
-		Class.setBounds(5, 30, 45, 20);
-		Specificity1.setBounds(5, 65, 75, 20);
-		Specificity2.setBounds(5, 100, 75, 20);
 
 		// 라벨 텍스트 시작
-		NoT = new JLabel();
-		NameT = new JLabel();
-		Type1T = new JLabel();
-		Type2T = new JLabel();
-		ClassT = new JLabel();
-		Specificity1T = new JLabel();
-		Specificity2T = new JLabel();
+		NoT = new JLabel("넘버");
+		NameT = new JLabel("이름");
+		Type1T = new JLabel("타입1");
+		Type2T = new JLabel("타입2");
+		ClassT = new JLabel("쿨래스");
+		Specificity1T = new JLabel("S1");
+		Specificity2T = new JLabel("S2");
 
 		// 라벨 텍스트 위치
-		NoT.setBounds(70, 10, 90, 20);
-		NameT.setBounds(70, 40, 90, 20);
-		Type1T.setBounds(70, 70, 90, 20);
-		Type2T.setBounds(70, 100, 90, 20);
-		ClassT.setBounds(85, 30, 90, 20);
-		Specificity1T.setBounds(85, 65, 90, 20);
-		Specificity2T.setBounds(85, 100, 90, 20);
+		NoT.setBounds(80, 25, 90, 20);
+		NameT.setBounds(295, 15, 90, 20);
+		Type1T.setBounds(110, 23, 90, 20);
+		Type2T.setBounds(110, 50, 90, 20);
+		ClassT.setBounds(30, 95, 90, 20);
+		Specificity1T.setBounds(30, 160, 90, 20);
+		Specificity2T.setBounds(30, 205, 90, 20);
 
 		// 목로값 불러오기 swing Table 설정 방법
 		// 테이블을 생성해서 content pane에 추가합니다(내가 원하는 기술 하나선택시 행이 전체선택되는 부분)
@@ -723,7 +791,7 @@ public class PocketmonAWT {
 		};
 		table = new JTable(model);
 		JScrollPane js = new JScrollPane(table);
-		js.setBounds(0, 0, 300, 265);
+		js.setBounds(0, 0, 290, 235);
 		jp5.add(js);
 		table.addMouseListener(new MyMouseListener());
 		f.getContentPane().setLayout(null);
@@ -731,133 +799,121 @@ public class PocketmonAWT {
 
 		// 가운데 이미지
 		Mainpic = new JLabel();
-		Mainpic.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\pika.jpg"));
-		Mainpic.setBounds(195, 60, 340, 250);
+		Mainpic.setBounds(300, 127, 340, 250);
 		// f.getContentPane().add(lblNewLabel_1);
 		f.add(Mainpic);
 
 		// 오른쪽 위 라벨
 		JLabel classlabel = new JLabel();
 		classlabel.setIcon(
-				new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uC624\uB978\uCABD\uC704(\uD074\uB798\uC2A4).jpg"));
-		classlabel.setBounds(540, 90, 180, 150);
+				new ImageIcon("C:\\Users\\user\\Desktop\\design\\status209x250.png"));
+		classlabel.setBounds(40, 128, 209, 250);
 		f.getContentPane().add(classlabel);
-		classlabel.add(Class);
 		classlabel.add(ClassT);
-		classlabel.add(Specificity1);
 		classlabel.add(Specificity1T);
-		classlabel.add(Specificity2);
 		classlabel.add(Specificity2T);
+		classlabel.add(Type1T);
+		classlabel.add(Type2T);
+		
+		
 
 		// 왼쪽 라벨
 		JLabel nonamelabel = new JLabel();
-		nonamelabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uC67C\uCABD \uC704(\uB118\uBC84).jpg"));
-		nonamelabel.setBounds(10, 100, 180, 130);
+		nonamelabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\NoName543x59.png"));
+		nonamelabel.setBounds(80, 70, 543,59);
 		f.getContentPane().add(nonamelabel);
-		nonamelabel.add(No);
 		nonamelabel.add(NoT);
-		nonamelabel.add(Name);
 		nonamelabel.add(NameT);
-		nonamelabel.add(Type1);
-		nonamelabel.add(Type1T);
-		nonamelabel.add(Type2);
-		nonamelabel.add(Type2T);
+		
 
 		// 라벨, 텍스트상자, 버튼을 생성해서 테이블 아래쪽에 추가합니다
-		JButton button1 = new JButton();
-		button1.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uC544\uC774\uCF58.jpg"));
-		f.getContentPane().add(button1);
-		button1.setBounds(987, 133, 40, 24);
+		JButton searchbutton = new JButton();
+		searchbutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\searchbutton.png"));
+		f.getContentPane().add(searchbutton);
+		searchbutton.setBounds(961, 204, 38, 38);
 		// 추가,삭제 버튼에 대한 리스너를 등록
-		button1.addActionListener(new listup(table));
+		searchbutton.addActionListener(new listup(table));
 
 		// 삭제테스트 버튼
-		JButton button3 = new JButton("삭제");
-		f.add(button3);
-		button3.setBounds(900, 133, 60, 24);
-		button3.addActionListener(new deletebutton());
+		JButton deletebutton = new JButton();
+		f.add(deletebutton);
+		deletebutton.setBounds(824, 204, 39, 38);
+		deletebutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\deletebutton.png"));
+		deletebutton.addActionListener(new deletebutton());
 
 		// 수정테스트 버튼
-		button4 = new JButton("수정");
-		button4.setEnabled(false);
-		f.add(button4);
-		button4.setBounds(800, 133, 60, 24);
-		button4.addActionListener(new rewritebutton());
+		rewritebutton = new JButton();
+		rewritebutton.setEnabled(false);
+		f.add(rewritebutton);
+		rewritebutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\rewritebutton.png"));
+		rewritebutton.setBounds(892, 204, 40, 38);
+		rewritebutton.addActionListener(new rewritebutton());
+		
 
 		// Search 파트 라벨 텍스트 시작
 		NoT1 = new TextField();
 		f.getContentPane().add(NoT1);
 
 		// Search 파트 라벨 위치설정
-		NoT1.setBounds(786, 37, 60, 20);
-
-		// Search 파트 시작
-		JLabel No1 = new JLabel("No. :");
-		f.getContentPane().add(No1);
+		NoT1.setBounds(805, 81, 40, 20);
 
 		// Search 파트 위치설정
-		No1.setBounds(730, 37, 30, 20);
-		JLabel Name1 = new JLabel("Name :");
-		f.getContentPane().add(Name1);
-		Name1.setBounds(853, 37, 50, 20);
 		NameT1 = new TextField();
 		f.getContentPane().add(NameT1);
-		NameT1.setBounds(907, 37, 117, 20);
+		NameT1.setBounds(937, 81, 51, 20);
 		Type1T1 = new TextField();
 		f.getContentPane().add(Type1T1);
-		Type1T1.setBounds(786, 75, 85, 20);
-		JLabel Type11 = new JLabel("Type1 :");
-		f.getContentPane().add(Type11);
-		Type11.setBounds(730, 75, 50, 20);
-		JLabel Type21 = new JLabel("Type2 :");
-		f.getContentPane().add(Type21);
-		Type21.setBounds(880, 75, 50, 20);
+		Type1T1.setBounds(868, 108, 120, 20);
 		Type2T1 = new TextField();
 		f.getContentPane().add(Type2T1);
-		Type2T1.setBounds(932, 75, 90, 20);
+		Type2T1.setBounds(868, 137, 120, 20);
 		ClassT1 = new TextField();
 		f.getContentPane().add(ClassT1);
-		ClassT1.setBounds(787, 112, 235, 20);
-		JLabel Class1 = new JLabel("Class :");
-		f.getContentPane().add(Class1);
-		Class1.setBounds(730, 112, 50, 20);
-		DescriptionT = new JLabel();
-		f.getContentPane().add(DescriptionT);
-		DescriptionT.setBounds(25, 351, 680, 60);
-		JLabel Description = new JLabel("Description :");
-		Description.setBounds(20, 5, 100, 20);
+		ClassT1.setBounds(868, 163, 120, 20);
+		
 
 		// 라벨 구현
 		JLabel descriptionlabel = new JLabel();
-		descriptionlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uB514\uC2A4\uD06C\uB9BD\uC158.jpg"));
-		descriptionlabel.setBounds(8, 320, 710, 105);
+		descriptionlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\descriptionlabel.png"));
+		descriptionlabel.setBounds(23, 375, 710, 105);
 		f.getContentPane().add(descriptionlabel);
-		descriptionlabel.add(Description);
+		DescriptionT = new JLabel("설명");
+		descriptionlabel.add(DescriptionT);
+		DescriptionT.setBounds(25, 20, 620, 60);
 
-		// 데이터 추가
+		// 데이터 추가 
 		JButton addButton = new JButton();
-		addButton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\add.jpg"));
-		addButton.setBounds(730, 134, 40, 23);
+		addButton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\addButton.png"));
+		addButton.setBounds(756, 204, 39, 39);
 		f.getContentPane().add(addButton);
 		addButton.addActionListener(new addbox(table));
 
 		// 바탕 라벨
 		backgroundlabel = new JLabel();
-		backgroundlabel.setBounds(0, 0, 725, 431);
-		backgroundlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\back.jpg"));
+		backgroundlabel.setBounds(0, 0, 730, 512);
+		backgroundlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\resultpart_712x512.png"));
 		f.getContentPane().add(backgroundlabel);
+		
+		//랜덤버턴
+		JButton Rdbutton = new JButton();
+		backgroundlabel.add(Rdbutton);
+		Rdbutton.setBounds(635, 80, 40, 40);
+		Rdbutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\Rdbutton58x58.png"));
+		Rdbutton.addActionListener(new Rdbutton());
 
 		JLabel searchpartlabel = new JLabel();
-		searchpartlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\\uAC80\uC0C9\uB780.jpg"));
-		searchpartlabel.setBounds(726, 0, 309, 431);
+		searchpartlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\searchpart_338x512.png"));
+		searchpartlabel.setBounds(710, 0, 360, 512);
 
 		f.getContentPane().add(addButton);
 		f.getContentPane().add(searchpartlabel);
-		f.setSize(1050, 470);
+		f.setSize(1060, 550);
 		f.addWindowListener(ec);
 		f.setUndecorated(false);
 		f.setResizable(false);// 창 크기 수정 불가
 		f.setVisible(true);
-
+		
 	}
+
+	
 }
