@@ -9,8 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -113,8 +112,8 @@ public class PocketmonAWT {
 	static JButton button5;
 	static JButton button6;
 
-	public static class PocketmonExitClass extends WindowAdapter {
-		public void windowClosing(WindowEvent e) {
+	public static class PocketmonExitClass implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 			System.exit(0);
 		}
 
@@ -354,10 +353,8 @@ public class PocketmonAWT {
 			try {
 				int row = table.getSelectedRow();// 순서 값 불러오기
 				String no = (String) table.getValueAt(row, 0);// 순서값을 이용하여 포켓몬 넘버 불러오기
-
-				System.out.println("291 lines : -------------------------");
 				String quary = "SELECT * FROM POCKETMON where no like '%" + no + "%'";
-				System.out.println(quary);
+				System.out.println("Line 357---------"+quary);
 
 				conn = PocketmonDBconnection.getConnection();
 				pstm = conn.prepareStatement(quary);
@@ -460,7 +457,7 @@ public class PocketmonAWT {
 			
 			redelete.add(red);
 			redelete.setLayout(null);
-			redelete.setBounds(340, 200, 400, 200);
+			redelete.setBounds(640, 400, 400, 200);
 			redelete.setVisible(true);
 
 		}
@@ -513,10 +510,7 @@ public class PocketmonAWT {
 			res2T.setSize(90, 20);
 			redeT.setSize(680, 90);
 			rejsp.setSize(680, 90);
-			
-			
-			
-			
+					
 			// (0, 0, 725, 431);
 			button5 = new JButton();
 			button5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
@@ -602,7 +596,7 @@ public class PocketmonAWT {
 			
 			rechick.add(rcl);
 			rechick.setLayout(null);
-			rechick.setBounds(348, 200, 400, 200);
+			rechick.setBounds(640, 400, 400, 200);
 			rechick.setVisible(true);
 			rewritebutton.setEnabled(false);
 			button5.setVisible(false);
@@ -755,11 +749,27 @@ public class PocketmonAWT {
 			
 		}
 	}
+	public static class MyMouseListener2 implements MouseMotionListener {
+		
+		int xDrag, yDrag, xPress, yPress;
+		
+		public void mouseDragged(MouseEvent e) {
+			xDrag = e.getX();
+			yDrag = e.getY();
+			f = (JFrame) e.getSource();
+			f.setLocation(f.getLocation().x + xDrag - xPress, f.getLocation().y + yDrag - yPress);
+		}
+
+		public void mouseMoved(MouseEvent e) {
+			xPress = e.getX();
+			yPress = e.getY();
+
+		}
+	}
 	
 
 	public static void main(String[] args) {
 		f = new JFrame("Pocketmon Test");
-		PocketmonExitClass ec = new PocketmonExitClass();
 		f.getContentPane().setLayout(null);
 
 		//Scroll panel
@@ -770,13 +780,13 @@ public class PocketmonAWT {
 
 
 		// 라벨 텍스트 시작
-		NoT = new JLabel("넘버");
-		NameT = new JLabel("이름");
-		Type1T = new JLabel("타입1");
-		Type2T = new JLabel("타입2");
-		ClassT = new JLabel("쿨래스");
-		Specificity1T = new JLabel("S1");
-		Specificity2T = new JLabel("S2");
+		NoT = new JLabel();
+		NameT = new JLabel();
+		Type1T = new JLabel();
+		Type2T = new JLabel();
+		ClassT = new JLabel();
+		Specificity1T = new JLabel();
+		Specificity2T = new JLabel();
 
 		// 라벨 텍스트 위치
 		NoT.setBounds(80, 10, 90, 40);
@@ -890,7 +900,7 @@ public class PocketmonAWT {
 		descriptionlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\descriptionlabel.png"));
 		descriptionlabel.setBounds(23, 375, 710, 105);
 		f.getContentPane().add(descriptionlabel);
-		DescriptionT = new JLabel("설명");
+		DescriptionT = new JLabel();
 		descriptionlabel.add(DescriptionT);
 		DescriptionT.setBounds(25, 20, 620, 60);
 		DescriptionT.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 14));
@@ -919,12 +929,22 @@ public class PocketmonAWT {
 		searchpartlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\searchpart_338x512.png"));
 		searchpartlabel.setBounds(710, 0, 360, 512);
 
+		//종류버튼
+		JButton Exitbutton = new JButton();
+		Exitbutton.setBounds(993, 10, 35, 35);
+		Exitbutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\Exitbutton_44x44.jpg"));
+		f.getContentPane().add(Exitbutton);
+		Exitbutton.addActionListener(new PocketmonExitClass());
+
+		//마우스 무브
+		f.addMouseMotionListener(new MyMouseListener2());
+		
 		f.getContentPane().add(addButton);
 		f.getContentPane().add(searchpartlabel);
-		f.setSize(1060, 550);
-		f.addWindowListener(ec);
+		f.setBounds(200,200,1049, 513);
 		f.setUndecorated(false);
 		f.setResizable(false);// 창 크기 수정 불가
+		f.setUndecorated(true);
 		f.setVisible(true);
 		
 	}
