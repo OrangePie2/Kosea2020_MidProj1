@@ -380,14 +380,17 @@ public class PocketmonAWTTest {
 					Specificity2T.setText(Specificity2);
 					DescriptionT.setText(Description);
 
-					// 이미지 불러오기
-					Image image = Mainpic.getToolkit().createImage(bytes);
-					// 이미지 크기맞추기
-					ImageIcon ii=new ImageIcon(image);
-					Dimension d= Mainpic.getSize();
-					ii = imageSetsize(ii, d.width, d.height);
-					
-					Mainpic.setIcon(ii);
+					if (bytes == null) {
+						Mainpic.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\noimage.jpg"));
+					} else {
+						// 이미지 불러오기
+						Image image = Mainpic.getToolkit().createImage(bytes);
+						// 이미지 크기맞추기
+						ImageIcon ii = new ImageIcon(image);
+						Dimension d = Mainpic.getSize();
+						ii = imageSetsize(ii, d.width, d.height);
+						Mainpic.setIcon(ii);
+					}
 				}
 			} catch (SQLException sqle) {
 				System.out.println("SELECT문에서 예외 발생");
