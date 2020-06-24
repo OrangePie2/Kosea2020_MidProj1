@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -72,6 +73,7 @@ public class PocketmonAWT {
 	static JLabel jlabel;
 
 	// 이미지 삽입 라벨, 이미지주소 입력
+	static JLabel descriptionlabel;
 	static JLabel addjl;
 	static String picsave;
 
@@ -109,8 +111,10 @@ public class PocketmonAWT {
 	static JFrame redelete;
 
 	static JButton rewritebutton;
+	static JButton deletebutton;
 	static JButton button5;
 	static JButton button6;
+	
 
 	public static class PocketmonExitClass implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -178,7 +182,13 @@ public class PocketmonAWT {
 			
 			// add JLabel에 이미지 넣기
 			addjl.setIcon(ii);
-			addimageChanged = true;
+			//널값 처리
+			if (pic.getDirectory() != null & pic.getFile()!= null) {
+				addimageChanged = true;
+			} else {
+				addimageChanged = false;
+			}
+
 		}
 	}
 	//Imgae변환 (이미지 아이콘 품질 깨지지 않고 변환하기 위해)
@@ -219,20 +229,12 @@ public class PocketmonAWT {
 			} // 연결 종류
 
 			try {
-				
-				if (addimageChanged == true) {
 					addquary2 = "INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description, IMAGE) "
 							+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'" + addtype1T.getText()
 							+ "'," + "'" + addtype2T.getText() + "'," + "'" + addclassT.getText() + "'," + "'"
 							+ addspecificity1T.getText() + "'," + "'" + addspecificity2T.getText() + "'," + "'"
 							+ adddescriptionT.getText() + "'," + "?)";
-				} else {
-					addquary2 = "INSERT INTO POCKETMON(NO, NAME,TYPE1,TYPE2,CLASS,SPECIFICITY1,SPECIFICITY2,description) "
-							+ "values" + "('" + b + "'," + "'" + addnameT.getText() + "'," + "'" + addtype1T.getText()
-							+ "'," + "'" + addtype2T.getText() + "'," + "'" + addclassT.getText() + "'," + "'"
-							+ addspecificity1T.getText() + "'," + "'" + addspecificity2T.getText() + "'," + "'"
-							+ adddescriptionT.getText() + "')";
-				}
+
 				
 				String quary=addquary2;
 				System.out.println("Line 223: "+quary);
@@ -246,7 +248,16 @@ public class PocketmonAWT {
 					System.out.println(e1);
 					e1.printStackTrace();}
 				pstm.setBinaryStream(1, imageInputStream);
+			} else {
+				String noimage = "C:\\Users\\user\\Desktop\\design\\noimage.jpg";
+				try {
+					imageInputStream = new FileInputStream(new File(noimage));
+				} catch (FileNotFoundException e1) {
+					System.out.println(e1);
+					e1.printStackTrace();
 				}
+				pstm.setBinaryStream(1, imageInputStream);
+			}
 				
 				pstm.execute();
 			
@@ -321,8 +332,7 @@ public class PocketmonAWT {
 			// add JLabel 구현
 			addjl = new JLabel();
 			addjl.setBounds(39, 40, 352, 352);
-			// String pic2=pic(picsave);
-			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\pocket\\lugia.jpg"));
+			addjl.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\noimage.jpg"));
 			addJF.getContentPane().add(addjl);
 
 			// add backLabel 구현
@@ -397,6 +407,7 @@ public class PocketmonAWT {
 				sqle.printStackTrace();
 			} // 연결 종류
 			rewritebutton.setEnabled(true);
+			deletebutton.setEnabled(true);
 		}
 
 		@Override
@@ -479,6 +490,7 @@ public class PocketmonAWT {
 	public static class rewritebutton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			deletebutton.setEnabled(false);
 			System.out.println("rewrite");
 
 			renoT = new JTextField(No);
@@ -517,16 +529,15 @@ public class PocketmonAWT {
 			// (0, 0, 725, 431);
 			button5 = new JButton();
 			button5.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\confirmbutton89x30.jpg"));
-			backgroundlabel.add(button5);
-			button5.setBounds(598, 357, 70, 20);
+			descriptionlabel.add(button5);
+			button5.setBounds(500, 85, 70, 20);
 			button5.addActionListener(new rewrite2button());
 
 			button6 = new JButton();
-			backgroundlabel.add(button6);
+			descriptionlabel.add(button6);
 			button6.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\imagebutton89x30.png"));
-			button6.setBounds(598, 335, 70, 20);
-			button6.addActionListener(new repicture2button());
-
+			button6.setBounds(580, 85, 70, 20);
+			button6.addActionListener(new repicture2button());	
 		}
 
 	}
@@ -535,6 +546,7 @@ public class PocketmonAWT {
 	public static class rewrite2button implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
 			System.out.println("rewrite2");
 
 			Connection conn = null;
@@ -556,6 +568,8 @@ public class PocketmonAWT {
 
 				if (imageChanged == true) {
 					query += "', IMAGE=?" + " WHERE NO =" + "'" + no + "'";
+					System.out.println("567----"+piccome);
+					
 					try {
 						imageInputStream = new FileInputStream(new File(piccome));
 						System.out.println("Line495" + piccome);
@@ -574,8 +588,6 @@ public class PocketmonAWT {
 				if (imageChanged == true) {
 					pstm.setBinaryStream(1, imageInputStream);
 				}
-
-
 				pstm.execute();
 			} catch (SQLException sqle) {
 				System.out.println("Line 553: 수정 부분에서 예외 발생");
@@ -604,7 +616,6 @@ public class PocketmonAWT {
 			rewritebutton.setEnabled(false);
 			button5.setVisible(false);
 			button6.setVisible(false);
-
 		}
 
 	}
@@ -673,6 +684,7 @@ public class PocketmonAWT {
 
 			button5.setVisible(false);
 			button6.setVisible(false);
+			deletebutton.setVisible(true);
 			rechick.dispose();
 		}
 	}
@@ -696,7 +708,12 @@ public class PocketmonAWT {
 			
 			// add JLabel에 이미지 넣기
 			Mainpic.setIcon(ii);
-			imageChanged = true;
+			//널값 처리
+			if (pico.getDirectory() != null & pico.getFile()!= null) {
+				imageChanged = true;
+			} else {
+				imageChanged = false;
+			}
 		}
 	}
 	
@@ -706,8 +723,23 @@ public class PocketmonAWT {
 			Connection conn = null;
 			PreparedStatement pstm = null;
 			ResultSet rs = null;
+			String maxnum="";
 			try {
-				int rd= (int) ((Math.random()*150)+1);
+				
+				try {
+					String quary1 = "select max(no) from pocketmon";
+					conn = PocketmonDBconnection.getConnection();
+					pstm = conn.prepareStatement(quary1);
+					rs = pstm.executeQuery();
+					while (rs.next()) {
+						maxnum = rs.getString(1);
+					}
+				} catch (SQLException sqle) {
+					System.out.println("SELECT2문에서 예외 발생");
+					sqle.printStackTrace();
+				} // 연결 종류
+				int rd2= Integer.parseInt(maxnum);
+				int rd= (int) ((Math.random()*rd2));
 				String no = Integer.toString(rd); 
 				String quary = "SELECT * FROM POCKETMON where no like '%" + no + "%'";
 				
@@ -770,6 +802,66 @@ public class PocketmonAWT {
 		}
 	}
 	
+	
+	//클릭시 이비지 변경
+	public static class ImageMouseListener implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			System.out.println("ImageChage");
+
+			if (bytes != null) {
+				Connection conn = null;
+				PreparedStatement pstm = null;
+				ResultSet rs = null;
+				try {
+					int rd = (int) ((Math.random() * 3) + 1);
+					String quary = "SELECT IMAGE" + rd + " FROM POCKETIMAGE where NAME LIKE " + "'%"
+							+ NameT.getText().trim() + "%'";
+					System.out.println(quary);
+					
+					conn = PocketmonDBconnection.getConnection();
+					pstm = conn.prepareStatement(quary);
+					rs = pstm.executeQuery();
+					bytes = null;// DB이미지 구현
+					while (rs.next()) {
+						bytes = rs.getBytes(1);
+	
+						if (bytes != null) {
+							// 이미지 불러오기
+							Image image = Mainpic.getToolkit().createImage(bytes);
+							ImageIcon ii = new ImageIcon(image);
+							// 이미지 크기맞추기
+							Dimension d = Mainpic.getSize();
+							ii = imageSetsize(ii, d.width, d.height);
+							Mainpic.setIcon(ii);
+						}
+					}
+				} catch (SQLException sqle) {
+					System.out.println("SELECT문에서 예외 발생");
+					sqle.printStackTrace();
+				} // 연결 종류
+			}
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+
+		}
+
+	}	
 
 	public static void main(String[] args) {
 		f = new JFrame("Pocketmon Test");
@@ -825,7 +917,7 @@ public class PocketmonAWT {
 
 		// 가운데 이미지
 		Mainpic = new JLabel();
-		Mainpic.setBounds(300, 127, 340, 250);
+		Mainpic.setBounds(300, 137, 340, 240);
 		// f.getContentPane().add(lblNewLabel_1);
 		f.add(Mainpic);
 
@@ -861,7 +953,8 @@ public class PocketmonAWT {
 		searchbutton.addActionListener(new listup(table));
 
 		// 삭제테스트 버튼
-		JButton deletebutton = new JButton();
+		deletebutton = new JButton();
+		deletebutton.setEnabled(false);
 		f.add(deletebutton);
 		deletebutton.setBounds(824, 204, 39, 38);
 		deletebutton.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\deletebutton.png"));
@@ -899,7 +992,7 @@ public class PocketmonAWT {
 		
 
 		// 라벨 구현
-		JLabel descriptionlabel = new JLabel();
+		descriptionlabel = new JLabel();
 		descriptionlabel.setIcon(new ImageIcon("C:\\Users\\user\\Desktop\\design\\descriptionlabel.png"));
 		descriptionlabel.setBounds(23, 375, 710, 105);
 		f.getContentPane().add(descriptionlabel);
@@ -942,6 +1035,9 @@ public class PocketmonAWT {
 		//마우스 무브
 		f.addMouseMotionListener(new MyMouseListener2());
 		
+		//그림 클릭시 그림 변경
+		Mainpic.addMouseListener(new ImageMouseListener());
+				
 		f.getContentPane().add(addButton);
 		f.getContentPane().add(searchpartlabel);
 		f.setBounds(200,200,1049, 513);
